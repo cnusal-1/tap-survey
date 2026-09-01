@@ -102,12 +102,16 @@ canvas{display:block;width:100%;height:auto}
 pre{font-family:"IBM Plex Mono",monospace;font-size:10.5px;background:var(--surface-2);
  border:1px solid var(--line-soft);border-radius:8px;padding:10px;overflow:auto;max-height:230px;margin:8px 0}
 .bleed{margin-left:-16px;margin-right:-16px;border-radius:0;border-left:0;border-right:0}
-.cam{position:relative;margin:12px -16px 0;background:#000;overflow:hidden}
-.cam video{display:block;width:100%;height:auto;background:#000}
+.cam{position:relative;margin:12px -16px 0;background:#000;overflow:hidden;
+ height:min(52vh,380px)}
+.cam video{display:block;width:100%;height:100%;object-fit:contain;background:#000}
 .cam canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.camtip{position:absolute;left:0;right:0;bottom:62px;text-align:center;color:#fff;font-size:12.5px;
+.camtip{position:absolute;left:0;right:0;top:8px;text-align:center;color:#fff;font-size:12px;
  text-shadow:0 1px 4px #000;pointer-events:none}
-.camBtns{position:absolute;left:12px;right:12px;bottom:12px;margin:0}
+.camBtns{position:absolute;left:0;right:0;bottom:0;margin:0;padding:10px 12px 12px;
+ background:linear-gradient(to top,rgba(0,0,0,.72),rgba(0,0,0,0))}
+.camBtns button{padding:13px 16px}
+.camBtns button.primary{flex:1.6}
 .camBtns button{backdrop-filter:blur(6px);background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.4)}
 .camBtns button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .gh{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -278,8 +282,20 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       </div>
       <div id="dlNote"></div>
 
-      <label style="margin-top:20px">깃허브에 바로 올리기</label>
-      <p class="hint" style="margin:0 0 10px">이 페이지를 깃허브 페이지스에 올려 쓰면, 조사 결과를 그 자리에서 저장소로 보낼 수 있다.</p>
+      <label style="margin-top:24px">수집 서버로 보내기</label>
+      <p class="hint" style="margin:0 0 10px">조사자는 <b>주소 하나만</b> 있으면 된다. 토큰도 계정도 필요 없다. 담당자가 수집 창구를 한 번 만들어 주소를 나눠 준다 — 만드는 법은 저장소의 <span class="mono">collector.gs</span> 참조.</p>
+      <label>수집 주소</label>
+      <input id="cx_url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+      <label>암구호 (담당자가 정한 값)</label>
+      <input id="cx_key" type="password" placeholder="현장에서 받은 값" autocomplete="off">
+      <div class="btnrow">
+        <button class="primary" id="cxPush">수집 서버로 보내기</button>
+        <button class="ghost" id="cxSave">주소 기억</button>
+      </div>
+      <div id="cxNote"></div>
+
+      <label style="margin-top:26px">깃허브에 직접 올리기 <span class="pill neu">담당자용</span></label>
+      <p class="hint" style="margin:0 0 10px">저장소 쓰기 토큰이 필요하다. <strong>조사자에게 나눠 주지 마라</strong> — 토큰 하나로 저장소 전체를 지울 수 있다. 여러 사람이 조사한다면 위의 수집 서버를 쓴다.</p>
       <div class="gh">
         <div><label>소유자 / 저장소</label><input id="gh_repo" placeholder="cnusal/tap-survey"></div>
         <div><label>브랜치</label><input id="gh_branch" placeholder="main"></div>
@@ -464,7 +480,12 @@ function drawCam(){
  const W=v.clientWidth,H=v.clientHeight,dpr=Math.min(devicePixelRatio||1,2);
  cv.width=W*dpr;cv.height=H*dpr;
  const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
- const b=presetBox(W,H),x0=b[3].x,y0=b[3].y,w=b[1].x-b[0].x,h=b[0].y-b[3].y;
+ /* object-fit:contain 이라 영상이 레터박스로 들어간다. 테두리는 그 «실제 영상
+    영역» 위에 그려야 촬영된 사진의 박스와 정확히 같은 자리가 된다. */
+ const sc=Math.min(W/v.videoWidth,H/v.videoHeight);
+ const vw=v.videoWidth*sc,vh=v.videoHeight*sc,ox=(W-vw)/2,oy=(H-vh)/2;
+ const bb=presetBox(vw,vh);
+ const x0=bb[3].x+ox,y0=bb[3].y+oy,w=bb[1].x-bb[0].x,h=bb[0].y-bb[3].y;
  g.fillStyle="rgba(0,0,0,.42)";
  g.fillRect(0,0,W,y0);g.fillRect(0,y0+h,W,H-y0-h);
  g.fillRect(0,y0,x0,h);g.fillRect(x0+w,y0,W-x0-w,h);
@@ -979,6 +1000,53 @@ function doResume(sess,taps){
   img.onerror=()=>{finish();};
   img.src=url;
  } else finish();}
+
+/* ================= 수집 서버 전송 =================
+   조사자에게 쓰기 토큰을 나눠 주는 것은 구조가 틀렸다 — 토큰 하나로 저장소
+   전체를 지울 수 있고, 사람이 늘수록 관리가 안 된다. 담당자가 수집 창구를
+   하나 만들어 «주소 + 암구호» 만 나눠 준다. 자격증명은 창구 안에만 있다.
+   파일을 하나씩 나눠 보낸다 — 현장 통신에서 8 MB 한 방은 잘 끊긴다. */
+const CXK="tapsurvey.cx";
+(function(){try{const c=JSON.parse(localStorage.getItem(CXK)||"{}");
+ if(c.url)$("cx_url").value=c.url; if(c.key)$("cx_key").value=c.key;}catch(e){}})();
+$("cxSave").onclick=()=>{
+ try{localStorage.setItem(CXK,JSON.stringify({url:$("cx_url").value.trim(),key:$("cx_key").value}));
+  cxNote("주소를 이 기기에 기억했다. 다음부터는 안 넣어도 된다.","");}
+ catch(e){cxNote("이 브라우저가 저장을 막고 있다.","warn");}};
+function cxNote(html,kind){$("cxNote").innerHTML='<div class="note '+(kind||"info")+'">'+html+'</div>';}
+$("cxPush").onclick=async()=>{
+ const url=$("cx_url").value.trim(), key=$("cx_key").value;
+ if(!/^https:\/\//.test(url)){cxNote("수집 주소가 https 로 시작해야 한다.","warn");return;}
+ const jobs=[[BASE+".csv","text/csv",new Blob(["\uFEFF"+CSV],{type:"text/csv"})]];
+ if(S.face)jobs.push([BASE+".jpg","image/jpeg",S.face.file]);
+ if(S.ham)jobs.push([BASE+"-hammer.jpg","image/jpeg",S.ham.file]);
+ S.rows.filter(r=>r.audio).forEach(r=>jobs.push([BASE+"-"+r.tapId+".wav","audio/wav",
+   TapAudio.encodeWav(r.audio.seg,r.audio.fs).blob]));
+ $("cxPush").disabled=true;
+ const log=[];let done=0;
+ const show=()=>cxNote("<b>보내는 중 "+done+"/"+jobs.length+"</b><br>"+log.join("<br>"),"info");
+ show();
+ for(const [name,type,data] of jobs){
+  try{
+   const body=JSON.stringify({key,survey:BASE,name,type,
+    inspector:$("f_insp").value||"",bridge:$("f_bridge").value||"",
+    data:await b64(data)});
+   /* 구글 앱스 스크립트는 프리플라이트를 못 받는다 — text/plain 으로 단순 요청을 만든다 */
+   const r=await fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
+   let out=null;try{out=await r.json();}catch(e){}
+   if(!r.ok||(out&&out.ok===false))throw new Error((out&&out.error)||("HTTP "+r.status));
+   done++;log.push("✓ "+name);
+  }catch(e){
+   const m=String(e.message||e);
+   log.push("✗ "+name+" — "+m);
+   if(/Failed to fetch|NetworkError|blocked/i.test(m))
+    log.push("<b>연결하지 못했다.</b> 통신이 되는 곳에서 다시 보내라. 기록은 이 기기에 남아 있으니 나중에 «조사 종료 및 저장» 으로 돌아와 다시 누르면 된다.");
+   else if(/401|403|\uc554\uad6c\ud638/.test(m))log.push("암구호가 맞는지 확인하라.");
+   show();$("cxPush").disabled=false;return;}
+  show();}
+ cxNote("<b>모두 보냈다 — "+done+"개.</b><br>"+log.join("<br>")+
+  "<br>담당자 저장소에 «"+BASE+"» 폴더로 들어갔다.","");
+ $("cxPush").disabled=false;};
 
 /* ================= 깃허브 업로드 =================
    사용자의 저장소에 사용자의 토큰으로 올린다. 토큰은 이 브라우저의
