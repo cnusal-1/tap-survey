@@ -1,0 +1,1086 @@
+<title>두들김 조사 기록</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#E4E7E5;--surface:#F6F7F6;--surface-2:#ECEEEC;--ink:#121716;--ink-2:#374240;
+  --muted:#5E6A67;--line:#C9CFCC;--line-soft:#D9DEDB;
+  --accent:#1B6B5E;--accent-soft:#D6E6E1;--accent-ink:#FFFFFF;
+  --rust:#A2451A;--rust-soft:#F0DDD2;--steel:#41566B;--steel-soft:#DCE3E9;
+  --good:#1B7A4B;--good-soft:#D8ECE0;--warn:#8A6A12;--warn-soft:#F2E9CE;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#0E1211;--surface:#161B1A;--surface-2:#1D2322;--ink:#E6EBE9;--ink-2:#BCC6C3;
+  --muted:#8D9A96;--line:#2C3533;--line-soft:#242C2A;
+  --accent:#57BCA8;--accent-soft:#173430;--accent-ink:#08120F;
+  --rust:#E08150;--rust-soft:#332016;--steel:#88A2BC;--steel-soft:#1B2530;
+  --good:#4FBF87;--good-soft:#12281D;--warn:#D9B657;--warn-soft:#2C2513;
+}}
+:root[data-theme="dark"]{
+  --ground:#0E1211;--surface:#161B1A;--surface-2:#1D2322;--ink:#E6EBE9;--ink-2:#BCC6C3;
+  --muted:#8D9A96;--line:#2C3533;--line-soft:#242C2A;
+  --accent:#57BCA8;--accent-soft:#173430;--accent-ink:#08120F;
+  --rust:#E08150;--rust-soft:#332016;--steel:#88A2BC;--steel-soft:#1B2530;
+  --good:#4FBF87;--good-soft:#12281D;--warn:#D9B657;--warn-soft:#2C2513;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+ font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+ font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+.wrap{max-width:580px;margin:0 auto;padding:0 16px 110px}
+header{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid var(--line);padding:12px 0 10px}
+.htop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--accent);font-weight:600;text-align:right}
+.steps{display:flex;gap:4px;margin-top:10px}
+.steps div{flex:1;height:3px;border-radius:2px;background:var(--line)}
+.steps div.on{background:var(--accent)}.steps div.done{background:var(--good)}
+.stepname{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
+ text-transform:uppercase;color:var(--muted);margin-top:7px}
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:10px;padding:16px;margin:14px 0}
+.card h2{font-size:15.5px;margin:0 0 4px;font-weight:600}
+.card p.hint{font-size:13px;color:var(--muted);margin:0 0 14px}
+label{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+ text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
+label.req::after{content:" 필수";color:var(--rust);letter-spacing:0}
+.fw{position:relative}
+input,textarea,select{width:100%;padding:11px 34px 11px 12px;font-size:16px;border-radius:7px;
+ border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-family:inherit;
+ -webkit-appearance:none;appearance:none}
+input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
+.clr{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:0;
+ border-radius:50%;background:var(--line);color:var(--ink);font-size:13px;line-height:1;cursor:pointer;display:none;padding:0}
+.fw.has .clr{display:block}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+button{font-family:inherit;font-size:15px;font-weight:600;border-radius:8px;border:1px solid var(--line);
+ background:var(--surface-2);color:var(--ink);padding:12px 16px;cursor:pointer}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+button.primary:disabled{opacity:.4;cursor:not-allowed}
+button.ghost{background:transparent}
+button.danger{color:var(--rust);border-color:var(--rust-soft)}
+button.wide{width:100%;margin-top:14px}
+.btnrow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btnrow button{flex:1;min-width:100px}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
+.pick button{font-size:14px;padding:13px 8px}
+.pick button.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;
+ padding:11px 13px;margin:12px 0;font-size:13.5px}
+.note.warn{border-left-color:var(--rust);background:var(--rust-soft)}
+.note.info{border-left-color:var(--steel);background:var(--steel-soft)}
+.note.cau{border-left-color:var(--warn);background:var(--warn-soft)}
+.pill{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
+ padding:3px 8px;border-radius:20px;font-weight:600}
+.pill.ok{background:var(--good-soft);color:var(--good)}
+.pill.bad{background:var(--rust-soft);color:var(--rust)}
+.pill.neu{background:var(--steel-soft);color:var(--steel)}
+.stage{position:relative;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
+ overflow:hidden;margin-top:12px;touch-action:none}
+canvas{display:block;width:100%;height:auto}
+.readout{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
+.readout b{color:var(--accent);font-weight:600}
+.bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:10px}
+.bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .1s linear}
+.taplist{margin-top:12px;max-height:260px;overflow-y:auto;border:1px solid var(--line-soft);border-radius:8px}
+.ti{display:flex;align-items:center;gap:9px;padding:9px 11px;border-bottom:1px solid var(--line-soft);font-size:13px}
+.ti:last-child{border-bottom:0}
+.ti .id{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:34px}
+.ti .co{font-family:"IBM Plex Mono",monospace;flex:1;font-size:12px}
+.ti button{padding:5px 9px;font-size:12px;font-weight:500}
+.empty{padding:22px;text-align:center;color:var(--muted);font-size:13px}
+.stat{display:flex;border:1px solid var(--line-soft);border-radius:8px;overflow:hidden;margin:12px 0}
+.stat div{flex:1;padding:10px 6px;text-align:center;border-right:1px solid var(--line-soft)}
+.stat div:last-child{border-right:0}
+.stat .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:17px;font-weight:600;margin-top:2px}
+.fname{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface-2);
+ border:1px solid var(--line-soft);border-radius:7px;padding:9px 11px;margin:8px 0;word-break:break-all}
+.thumb{width:100%;border-radius:8px;border:1px solid var(--line-soft);margin-top:8px;display:block}
+pre{font-family:"IBM Plex Mono",monospace;font-size:10.5px;background:var(--surface-2);
+ border:1px solid var(--line-soft);border-radius:8px;padding:10px;overflow:auto;max-height:230px;margin:8px 0}
+.bleed{margin-left:-16px;margin-right:-16px;border-radius:0;border-left:0;border-right:0}
+.cam{position:relative;margin:12px -16px 0;background:#000;overflow:hidden}
+.cam video{display:block;width:100%;height:auto;background:#000}
+.cam canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.camtip{position:absolute;left:0;right:0;bottom:62px;text-align:center;color:#fff;font-size:12.5px;
+ text-shadow:0 1px 4px #000;pointer-events:none}
+.camBtns{position:absolute;left:12px;right:12px;bottom:12px;margin:0}
+.camBtns button{backdrop-filter:blur(6px);background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.4)}
+.camBtns button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.gh{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fileline{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);
+ margin-top:8px;word-break:break-all}
+.fileline.has{color:var(--accent)}
+.hide{display:none}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="htop"><h1>두들김 조사 기록</h1><span class="tag" id="tagOut">—</span></div>
+  <div class="steps"><div id="s0"></div><div id="s1"></div><div id="s2"></div><div id="s3"></div></div>
+  <div class="stepname" id="stepName">1 / 4 · 조사 정보</div>
+</header>
+
+<!-- 0. 조사 정보 -->
+<section id="step0">
+  <div class="card">
+    <h2>조사 정보</h2>
+    <p class="hint">파일명이 이 값으로 만들어진다. 날짜시간-교량명-교량부재-위치.</p>
+    <label class="req">조사 날짜</label>
+    <div class="fw"><input id="f_date" type="date"><button class="clr" data-for="f_date">✕</button></div>
+    <label class="req">교량명</label>
+    <div class="fw"><input id="f_bridge" placeholder="만경강교"><button class="clr" data-for="f_bridge">✕</button></div>
+    <div class="row">
+      <div><label class="req">교량부재</label><div class="fw"><input id="f_member" placeholder="P22"><button class="clr" data-for="f_member">✕</button></div></div>
+      <div><label class="req">위치</label><div class="fw"><input id="f_loc" placeholder="코핑 하면(동쪽)"><button class="clr" data-for="f_loc">✕</button></div></div>
+    </div>
+    <div class="row">
+      <div><label>점검원 (선택)</label><div class="fw"><input id="f_insp" placeholder="김우석"><button class="clr" data-for="f_insp">✕</button></div></div>
+      <div><label>보수재 설계두께 (mm)</label><input id="f_th" type="number" inputmode="numeric" placeholder="30"></div>
+    </div>
+    <p class="hint" style="margin:8px 0 0">설계두께는 깊이 역산의 전제다(계획서 명제 1). 모르면 비워도 되지만, 시공 기록에서 확인해 넣으면 그만큼 역산이 빨라진다. 배합·탄성계수는 현장에서 알 수 없으므로 받지 않는다 — 구역 이름으로 나중에 결합한다.</p>
+    <div id="resumeBox"></div>
+    <div id="m0"></div>
+    <button class="primary wide" id="go1">다음 · 사진 촬영</button>
+  </div>
+</section>
+
+<!-- 1. 사진과 치수 -->
+<section id="step1" class="hide">
+  <div class="card">
+    <h2>조사면 사진과 치수</h2>
+    <p class="hint">카메라에 <b>4:3 사각 테두리</b>가 뜬다. 조사할 면을 그 안에 꽉 채워 정면에서 찍는다. 테두리가 곧 박스이고, 아래에서 넣는 실제 길이는 <b>그 박스의 길이</b>다. 비율이 고정이라 <b>가로만 넣으면 세로는 계산된다</b>.</p>
+
+    <label class="req">조사면 사진</label>
+    <div class="btnrow" style="margin-top:0">
+      <button class="primary" id="camFace">카메라 열기</button>
+      <button class="ghost" id="pickFace">파일 선택</button>
+    </div>
+    <div class="fileline" id="faceName">아직 없음</div>
+    <input id="p_face" type="file" accept="image/*" capture="environment" hidden>
+    <input id="p_faceF" type="file" accept="image/*" hidden>
+
+    <div class="cam hide" id="camWrap">
+      <video id="camVid" playsinline muted></video>
+      <canvas id="camOv"></canvas>
+      <div class="camtip">면을 테두리에 꽉 채우고 <b>정면</b>에서 찍어라</div>
+      <div class="btnrow camBtns"><button class="ghost" id="camClose">닫기</button><button class="primary" id="camShot">촬영</button></div>
+    </div>
+
+    <div class="stage bleed hide" id="faceStage"><canvas id="faceCv"></canvas></div>
+    <div class="readout hide" id="faceRead">
+      <span>박스 <b id="boxSize">—</b></span><span>축척 <b id="scaleOut">—</b></span><span id="sigPill"></span>
+    </div>
+
+    <div class="row" style="margin-top:12px">
+      <div><label class="req">박스 가로 실제 길이 (mm)</label><input id="f_w" type="number" inputmode="numeric" placeholder="2400"></div>
+      <div><label class="req" id="hLab">박스 세로 (자동)</label><input id="f_h" type="number" inputmode="numeric" placeholder="1800"></div>
+    </div>
+    <div class="btnrow" style="margin-top:8px">
+      <button class="ghost" id="unlockBox">비스듬히 찍었다 · 모서리 맞추기</button>
+      <button class="ghost hide" id="resetBox">4 : 3 박스로 되돌리기</button>
+    </div>
+    <div id="lockNote"></div>
+    <div id="m1"></div>
+
+    <label style="margin-top:18px">점검 망치 사진 (선택)</label>
+    <div class="btnrow" style="margin-top:0">
+      <button class="ghost" id="camHam">사진 촬영</button>
+      <button class="ghost" id="pickHam">파일 선택</button>
+    </div>
+    <div class="fileline" id="hamName">아직 없음</div>
+    <input id="p_ham" type="file" accept="image/*" capture="environment" hidden>
+    <input id="p_hamF" type="file" accept="image/*" hidden>
+    <img id="hamThumb" class="thumb hide" alt="망치 사진">
+    <label style="margin-top:14px">망치 구분</label>
+    <select id="f_hid">
+      <option value="">— 고르기 —</option>
+      <option value="1번 · 소형 클로">1번 · 소형 클로 (claw, 소형)</option>
+      <option value="2번 · 대형 클로">2번 · 대형 클로 (claw, 대형)</option>
+      <option value="3번 · 볼핀">3번 · 볼핀 (ball-peen)</option>
+      <option value="기타">기타 — 아래 질량·비고에 적는다</option>
+    </select>
+    <p class="hint" style="margin:6px 0 0">만경강교 1차 조사에서 쓴 세 자루다. 같은 자루를 쓰면 지난 자료와 이어 붙일 수 있다.</p>
+    <div class="row" style="margin-top:6px">
+      <div><label>망치 질량 (g)</label><input id="f_hmass" type="number" inputmode="numeric" placeholder="450"></div>
+      <div><label>망치 비고</label><input id="f_hnote" placeholder="머리 지름 25 mm"></div>
+    </div>
+
+    <div class="btnrow"><button class="ghost" id="back1">뒤로</button><button class="primary" id="go2">다음 · 조사 시작</button></div>
+  </div>
+</section>
+
+<!-- 2. 조사 -->
+<section id="step2" class="hide">
+  <div class="card">
+    <h2>두들김 조사</h2>
+    <p class="hint">사진에서 칠 자리를 손가락으로 찍고 부위 구분을 고른다. <b>3초 음향 수집 시작</b>을 누르고 3초 동안 두들긴다 — 아래 그래프에 파형이 실시간으로 그려진다. 품질을 통과하면 자동으로 저장되고 <b>다음 조사 시작</b>이 열린다. 마이크 없이 좌표만 남기려면 «이 부위 기록»을 쓴다.</p>
+    <div class="stage bleed" id="surveyStage"><canvas id="surveyCv"></canvas></div>
+    <div class="readout">
+      <span>좌표 <b id="selMm">—</b></span><span>상대 <b id="selRel">—</b></span><span id="dupOut"></span>
+    </div>
+
+    <label>부위 구분</label>
+    <div class="pick" id="featRow">
+      <button data-f="보수부위">보수부위</button><button data-f="열화부위">열화부위</button>
+      <button data-f="건전부">건전부</button><button data-f="기타">기타</button>
+    </div>
+    <label>비고 (선택)</label>
+    <div class="fw"><input id="f_note" placeholder="예: 균열 인접, 표면 들뜸 육안 확인"><button class="clr" data-for="f_note">✕</button></div>
+
+    <div id="micArea">
+      <div class="note info" id="micBanner">마이크를 켜면 3초 녹음이 함께 저장된다. 켜지 않아도 좌표와 구분은 기록된다.</div>
+      <div class="btnrow"><button class="primary" id="micOn">마이크 켜기</button></div>
+    </div>
+    <div id="recArea" class="hide">
+      <div class="btnrow"><button class="primary" id="btnRec">3초 음향 수집 시작</button></div>
+      <div class="bar"><i id="recBar"></i></div>
+      <div class="stage" style="margin-top:8px"><canvas id="wave"></canvas></div>
+      <div class="readout">
+        <span id="recState">대기</span><span>최대 <b id="qPeak">—</b></span>
+        <span>SNR <b id="qSnr">—</b></span><span>타격 <b id="qOn">—</b></span>
+      </div>
+      <div id="qcMsg"></div>
+      <div class="btnrow"><button class="primary" id="btnNext" disabled>다음 조사 시작</button></div>
+    </div>
+    <div id="m2"></div>
+    <div class="btnrow"><button class="ghost" id="btnAdd">이 부위 기록 (녹음 없이)</button></div>
+
+    <div class="stat">
+      <div><div class="k">전체</div><div class="v" id="cAll">0</div></div>
+      <div><div class="k">보수</div><div class="v" id="cRep">0</div></div>
+      <div><div class="k">열화</div><div class="v" id="cDel">0</div></div>
+      <div><div class="k">건전</div><div class="v" id="cSnd">0</div></div>
+    </div>
+    <div class="taplist" id="tapList"><div class="empty">아직 기록된 부위가 없다</div></div>
+    <div class="btnrow"><button class="ghost" id="back2">뒤로</button><button class="primary" id="go3">조사 종료 및 저장</button></div>
+  </div>
+</section>
+
+<!-- 3. 저장 -->
+<section id="step3" class="hide">
+  <div class="card">
+    <h2>조사 종료 및 저장</h2>
+    <div id="saveGate"></div>
+    <div id="saveBody" class="hide">
+      <label>파일명</label>
+      <div class="fname" id="fnCsv">—</div>
+      <div class="fname" id="fnFace">—</div>
+      <div class="fname" id="fnHam">—</div>
+      <div class="btnrow">
+        <button class="primary" id="dlCsv">CSV 저장</button>
+        <button class="ghost" id="dlFace">사진·음향 저장</button>
+        <button class="ghost" id="cpCsv">CSV 복사</button>
+      </div>
+      <div id="dlNote"></div>
+
+      <label style="margin-top:20px">깃허브에 바로 올리기</label>
+      <p class="hint" style="margin:0 0 10px">이 페이지를 깃허브 페이지스에 올려 쓰면, 조사 결과를 그 자리에서 저장소로 보낼 수 있다.</p>
+      <div class="gh">
+        <div><label>소유자 / 저장소</label><input id="gh_repo" placeholder="cnusal/tap-survey"></div>
+        <div><label>브랜치</label><input id="gh_branch" placeholder="main"></div>
+      </div>
+      <label>저장 경로</label>
+      <input id="gh_path" placeholder="surveys">
+      <label>액세스 토큰</label>
+      <input id="gh_tok" type="password" placeholder="github_pat_…" autocomplete="off">
+      <div class="note cau" style="margin-top:10px">토큰은 <strong>이 브라우저에만</strong> 저장되고 서버로 가지 않는다. 저장소 하나에만 <span class="mono">Contents: Read and write</span> 권한을 준 <strong>세분화 토큰(fine-grained)</strong>을 쓰라. 공용 기기에서는 다 쓴 뒤 «토큰 지우기»를 눌러라.</div>
+      <div class="btnrow">
+        <button class="primary" id="ghPush">깃허브에 올리기</button>
+        <button class="ghost" id="ghSave">설정 기억</button>
+        <button class="ghost danger" id="ghClear">토큰 지우기</button>
+      </div>
+      <div id="ghNote"></div>
+
+      <label style="margin-top:20px">CSV 미리보기</label>
+      <pre id="csvOut"></pre>
+    </div>
+    <div class="btnrow"><button class="ghost" id="back3">뒤로</button><button class="ghost" id="btnNew">새 조사</button></div>
+  </div>
+</section>
+
+<footer>두들김 조사 기록 · 좌표는 조사면 좌하단 원점, 단위 mm. 사진 사영보정으로 계산한다.<br>
+<span id="swNote">—</span> · 기록은 타점마다 이 기기에 자동 저장된다.</footer>
+</div>
+
+<script>
+/* ================= 좌표 모듈 ================= */
+const TapCoords=(function(){"use strict";
+const SPEC={sigmaMax:25,dupMinMm:30};
+function solve(A,b){const n=b.length;const M=A.map((r,i)=>r.concat([b[i]]));
+ for(let c=0;c<n;c++){let p=c;for(let r=c+1;r<n;r++)if(Math.abs(M[r][c])>Math.abs(M[p][c]))p=r;
+  if(Math.abs(M[p][c])<1e-12)return null;[M[c],M[p]]=[M[p],M[c]];
+  for(let r=0;r<n;r++){if(r===c)continue;const f=M[r][c]/M[c][c];for(let k=c;k<=n;k++)M[r][k]-=f*M[c][k];}}
+ return M.map((r,i)=>r[n]/M[i][i]);}
+function PhotoFrame(src,dst){
+ if(!src||src.length!==4||!dst||dst.length!==4)return null;
+ const A=[],b=[];
+ for(let k=0;k<4;k++){const u=src[k].x,v=src[k].y,X=dst[k].x,Y=dst[k].y;
+  A.push([u,v,1,0,0,0,-u*X,-v*X]);b.push(X);A.push([0,0,0,u,v,1,-u*Y,-v*Y]);b.push(Y);}
+ const h=solve(A,b);if(!h)return null;
+ const H=[h[0],h[1],h[2],h[3],h[4],h[5],h[6],h[7],1];
+ const F={method:"photo",params:{src,dst,H},
+  pxToMm(u,v){const w=H[6]*u+H[7]*v+H[8];if(Math.abs(w)<1e-12)return null;
+   return{x:(H[0]*u+H[1]*v+H[2])/w,y:(H[3]*u+H[4]*v+H[5])/w};},
+  mmPerPx(){const cu=(src[0].x+src[1].x+src[2].x+src[3].x)/4,cv=(src[0].y+src[1].y+src[2].y+src[3].y)/4;
+   const a=F.pxToMm(cu,cv),b2=F.pxToMm(cu+10,cv);if(!a||!b2)return NaN;
+   return Math.hypot(b2.x-a.x,b2.y-a.y)/10;},
+  sigmaMm(tapErrPx){const e=[];for(let k=0;k<4;k++){const p=F.pxToMm(src[k].x,src[k].y);
+   if(p)e.push(Math.hypot(p.x-dst[k].x,p.y-dst[k].y));}
+   const fit=e.length?Math.sqrt(e.reduce((a,v)=>a+v*v,0)/e.length):0;
+   const tap=(tapErrPx==null?8:tapErrPx)*F.mmPerPx();
+   return Math.sqrt(fit*fit+tap*tap);}};
+ return F;}
+return{PhotoFrame,SPEC};})();
+
+/* ================= 오디오 모듈 ================= */
+const TapAudio=(function(){"use strict";
+const SPEC={durSec:3.0,preRollMs:500,minSnrDb:12,clipPeak:0.95,onsetK:8,onsetFloor:0.02};
+const rms=(a,i0,i1)=>{let s=0,n=0;for(let i=Math.max(0,i0);i<Math.min(a.length,i1);i++){s+=a[i]*a[i];n++;}
+ return n?Math.sqrt(s/n):0;};
+function findOnset(buf,fs,noise){
+ const w=Math.max(1,Math.round(0.002*fs)),thr=Math.max(SPEC.onsetFloor,SPEC.onsetK*(noise||0));
+ for(let i=0;i+w<buf.length;i+=w){if(rms(buf,i,i+w)>thr){
+  for(let j=i;j<i+w;j++)if(Math.abs(buf[j])>thr)return j; return i;}}
+ return -1;}
+function assess(seg,fs,idx){
+ if(idx<0){const bg=rms(seg,0,seg.length);
+  return{ok:false,retake:true,peak:0,snrDb:null,onsetMs:null,nTaps:0,
+   reasons:[bg>SPEC.onsetFloor/2?"주변이 시끄러워 타격이 묻혔다":"3초 안에 타격이 잡히지 않았다"]};}
+ const nR=rms(seg,0,Math.max(1,idx));
+ let peak=0,nf=0;for(let i=idx;i<seg.length;i++){const v=Math.abs(seg[i]);if(v>peak)peak=v;if(v>0.995)nf++;}
+ const sR=rms(seg,idx,Math.min(seg.length,idx+Math.round(0.03*fs)));
+ const snr=nR>0?20*Math.log10(sR/nR):(sR>0?99:null);
+ const clipped=nf/Math.max(1,seg.length-idx)>0.001;
+ /* 3초 안에 몇 번 쳤는지 — 50 ms 이상 떨어진 온셋을 센다 */
+ let n=0,last=-1e9;const thr=Math.max(SPEC.onsetFloor,SPEC.onsetK*nR);
+ for(let i=idx;i<seg.length;i++){if(Math.abs(seg[i])>thr&&i-last>0.05*fs){n++;last=i;}}
+ const q={ok:true,retake:false,reasons:[],peak:+peak.toFixed(4),
+  snrDb:snr===null?null:+snr.toFixed(1),onsetMs:+((idx/fs)*1000).toFixed(0),nTaps:n,clipped};
+ if(peak>SPEC.clipPeak||clipped){q.retake=true;q.reasons.push("최대진폭 "+peak.toFixed(2)+" — 약하게 치거나 마이크를 떼라");}
+ if(snr!==null&&snr<SPEC.minSnrDb){q.retake=true;q.reasons.push("신호대잡음비 "+snr.toFixed(0)+" dB — 주변이 시끄럽다");}
+ if(idx/fs*1000<200)q.reasons.push("녹음 시작 "+q.onsetMs+" ms 만에 쳤다 — 조금 늦게 치면 배경을 더 잘 잰다");
+ if(n===0)q.reasons.push("타격이 하나도 세어지지 않았다");
+ q.ok=!q.retake;return q;}
+function encodeWav(f32,fs){
+ const n=f32.length,buf=new ArrayBuffer(44+n*2),v=new DataView(buf);
+ const w=(o,s)=>{for(let i=0;i<s.length;i++)v.setUint8(o+i,s.charCodeAt(i));};
+ w(0,"RIFF");v.setUint32(4,36+n*2,true);w(8,"WAVEfmt ");v.setUint32(16,16,true);
+ v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,fs,true);
+ v.setUint32(28,fs*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);
+ w(36,"data");v.setUint32(40,n*2,true);
+ let clip=0;
+ for(let i=0;i<n;i++){let x=f32[i];if(x>1){x=1;clip++;}else if(x<-1){x=-1;clip++;}
+  v.setInt16(44+i*2,x<0?x*0x8000:x*0x7fff,true);}
+ return{blob:new Blob([buf],{type:"audio/wav"}),clip};}
+const CONSTRAINTS={audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false,channelCount:1}};
+function verifyTrack(t){const s=t&&t.getSettings?t.getSettings():{},bad=[];
+ if(s.autoGainControl===true)bad.push("자동이득제어");
+ if(s.noiseSuppression===true)bad.push("잡음억제");
+ if(s.echoCancellation===true)bad.push("에코제거");
+ return{settings:s,ok:bad.length===0,stillOn:bad};}
+return{SPEC,rms,findOnset,assess,encodeWav,CONSTRAINTS,verifyTrack};})();
+
+/* ================= 상태 ================= */
+const $=id=>document.getElementById(id);
+const S={step:0,face:null,ham:null,hamUrl:null,box:null,frame:null,drag:-1,
+ sel:null,feat:null,rows:[],seq:0,pending:null,meta:{}};
+const AU={on:false,ctx:null,stream:null,node:null,fs:0,rec:false,buf:null,pos:0,meta:null,level:0,raf:0};
+const CSS=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+document.querySelectorAll(".clr").forEach(b=>{const i=$(b.dataset.for);
+ const u=()=>b.parentElement.classList.toggle("has",!!i.value);
+ i.addEventListener("input",u);b.addEventListener("click",()=>{i.value="";u();i.focus();refreshTag();});u();});
+(function(){const d=new Date();$("f_date").value=d.toISOString().slice(0,10);
+ $("f_date").parentElement.classList.add("has");})();
+["f_bridge","f_member","f_loc"].forEach(id=>$(id).addEventListener("input",refreshTag));
+function refreshTag(){
+ const t=[$("f_bridge").value,$("f_member").value,$("f_loc").value].filter(Boolean).join(" · ");
+ $("tagOut").textContent=t||"—";}
+
+function setStep(n){S.step=n;
+ if(n!==1&&CAM&&CAM.stream)closeCam();
+ ["step0","step1","step2","step3"].forEach((id,i)=>$(id).classList.toggle("hide",i!==n));
+ for(let i=0;i<4;i++){const d=$("s"+i);d.className=i<n?"done":(i===n?"on":"");}
+ $("stepName").textContent=["1 / 4 · 조사 정보","2 / 4 · 사진과 치수","3 / 4 · 두들김 조사","4 / 4 · 종료 및 저장"][n];
+ if(n===1)drawFace(); if(n===2)drawSurvey();}
+
+/* ================= 사진과 박스 ================= */
+function loadImg(file,cb){const img=new Image();
+ img.onload=()=>cb(img,file);img.src=URL.createObjectURL(file);}
+/* 미리 설정된 박스 — 사진 폭의 86% 를 차지하는 고정 비율 사각형.
+   비율이 정해져 있으므로 한 변만 알면 나머지가 계산된다. */
+const BOX={ar:4/3,frac:0.86,locked:true};
+function presetBox(W,H){
+ let w=W*BOX.frac,h=w/BOX.ar;
+ if(h>H*BOX.frac){h=H*BOX.frac;w=h*BOX.ar;}
+ const x0=(W-w)/2,y0=(H-h)/2;
+ return [{x:x0,y:y0+h},{x:x0+w,y:y0+h},{x:x0+w,y:y0},{x:x0,y:y0}];}
+function arLabel(){return "4 : 3";}
+function syncLock(){
+ $("hLab").textContent=BOX.locked?"박스 세로 (자동)":"박스 세로 실제 길이 (mm)";
+ $("unlockBox").classList.toggle("hide",!BOX.locked);
+ $("resetBox").classList.toggle("hide",BOX.locked);
+ $("lockNote").innerHTML=BOX.locked?""
+  :'<div class="note cau">모서리를 직접 옮겼으므로 비율 고정이 풀렸다. <strong>가로·세로를 모두 넣어라.</strong></div>';}
+$("unlockBox").onclick=()=>{BOX.locked=false;syncLock();buildFrame();
+ $("faceStage").scrollIntoView({block:"center",behavior:"smooth"});};
+$("resetBox").onclick=()=>{BOX.locked=true;
+ if(S.face)S.box=presetBox(S.face.w,S.face.h);
+ syncLock();autoDim("w");buildFrame();};
+/* 한쪽을 넣으면 다른 쪽을 채운다 */
+function autoDim(src){
+ if(!BOX.locked||!S.box)return;
+ const bw=Math.hypot(S.box[1].x-S.box[0].x,S.box[1].y-S.box[0].y);
+ const bh=Math.hypot(S.box[3].x-S.box[0].x,S.box[3].y-S.box[0].y);
+ if(!bw||!bh)return;
+ const r=bw/bh;
+ if(src==="w"){const W=+$("f_w").value;if(W>0)$("f_h").value=Math.round(W/r);}
+ else{const H=+$("f_h").value;if(H>0)$("f_w").value=Math.round(H*r);}}
+
+/* ---------- 앱 안 카메라 — 사각 테두리를 띄운다 ---------- */
+const CAM={stream:null,track:null};
+async function openCam(){
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){$("p_face").click();return;}
+ try{CAM.stream=await navigator.mediaDevices.getUserMedia({video:{
+   facingMode:{ideal:"environment"},width:{ideal:3840},height:{ideal:2160}},audio:false});}
+ catch(e){ /* 권한이 없거나 카메라가 없으면 기기 기본 카메라로 넘긴다 */
+  $("m1").innerHTML='<div class="note cau">앱 안 카메라를 열지 못했다 ('+(e&&e.name||"오류")+'). 기기 카메라로 대신 연다.</div>';
+  $("p_face").click();return;}
+ CAM.track=CAM.stream.getVideoTracks()[0];
+ const v=$("camVid");v.srcObject=CAM.stream;await v.play();
+ $("camWrap").classList.remove("hide");
+ $("m1").innerHTML=""; drawCam(); v.scrollIntoView({block:"center",behavior:"smooth"});}
+function closeCam(){
+ if(CAM.stream)CAM.stream.getTracks().forEach(t=>t.stop());
+ CAM.stream=null;CAM.track=null;$("camVid").srcObject=null;$("camWrap").classList.add("hide");}
+function drawCam(){
+ const v=$("camVid"),cv=$("camOv");
+ if($("camWrap").classList.contains("hide")||!v.videoWidth)return;
+ const W=v.clientWidth,H=v.clientHeight,dpr=Math.min(devicePixelRatio||1,2);
+ cv.width=W*dpr;cv.height=H*dpr;
+ const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
+ const b=presetBox(W,H),x0=b[3].x,y0=b[3].y,w=b[1].x-b[0].x,h=b[0].y-b[3].y;
+ g.fillStyle="rgba(0,0,0,.42)";
+ g.fillRect(0,0,W,y0);g.fillRect(0,y0+h,W,H-y0-h);
+ g.fillRect(0,y0,x0,h);g.fillRect(x0+w,y0,W-x0-w,h);
+ g.strokeStyle="#57BCA8";g.lineWidth=2.5;g.strokeRect(x0,y0,w,h);
+ g.lineWidth=4;const c=Math.min(w,h)*0.13;
+ [[x0,y0,1,1],[x0+w,y0,-1,1],[x0+w,y0+h,-1,-1],[x0,y0+h,1,-1]].forEach(([x,y,sx,sy])=>{
+  g.beginPath();g.moveTo(x+sx*c,y);g.lineTo(x,y);g.lineTo(x,y+sy*c);g.stroke();});
+ g.strokeStyle="rgba(87,188,168,.45)";g.lineWidth=1;g.setLineDash([4,5]);
+ g.beginPath();g.moveTo(x0,y0+h/2);g.lineTo(x0+w,y0+h/2);
+ g.moveTo(x0+w/2,y0);g.lineTo(x0+w/2,y0+h);g.stroke();g.setLineDash([]);
+ g.fillStyle="#57BCA8";g.font="600 12px monospace";g.textAlign="center";
+ g.fillText(arLabel()+" 박스",x0+w/2,y0+16);
+ requestAnimationFrame(drawCam);}
+$("camFace").onclick=openCam;
+$("camClose").onclick=closeCam;
+$("camShot").onclick=()=>{
+ const v=$("camVid");if(!v.videoWidth)return;
+ const c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;
+ c.getContext("2d").drawImage(v,0,0);
+ c.toBlob(b=>{
+  const st=CAM.track&&CAM.track.getSettings?CAM.track.getSettings():{};
+  closeCam();
+  const f=new File([b],"조사면_"+new Date().toISOString().replace(/[:.]/g,"-")+".jpg",{type:"image/jpeg"});
+  f.camera=st; loadFace(f);},"image/jpeg",0.92);};
+$("pickFace").onclick=()=>$("p_faceF").click();
+$("camHam").onclick=()=>$("p_ham").click();
+$("pickHam").onclick=()=>$("p_hamF").click();
+const onFace=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;loadFace(f);};
+function loadFace(f){
+ loadImg(f,(img,file)=>{S.face={img,file,name:file.name,size:file.size,type:file.type,
+   lastModified:file.lastModified,w:img.naturalWidth,h:img.naturalHeight,camera:file.camera||null};
+  /* 촬영 때 화면에 띄운 것과 같은 «미리 설정된 박스» */
+  S.box=presetBox(img.naturalWidth,img.naturalHeight);BOX.locked=true;
+  $("faceStage").classList.remove("hide");$("faceRead").classList.remove("hide");
+  $("faceName").textContent=file.name+"  ·  "+img.naturalWidth+"×"+img.naturalHeight+" px";
+  $("faceName").classList.add("has");
+  syncLock();autoDim("w");buildFrame();markDirty();
+  $("faceStage").scrollIntoView({block:"center",behavior:"smooth"});});}
+$("p_face").onchange=onFace; $("p_faceF").onchange=onFace;
+const onHam=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
+ if(S.hamUrl)URL.revokeObjectURL(S.hamUrl);
+ S.hamUrl=URL.createObjectURL(f);
+ S.ham={file:f,name:f.name,size:f.size,type:f.type,lastModified:f.lastModified};
+ const t=$("hamThumb");t.src=S.hamUrl;t.classList.remove("hide");
+ $("hamName").textContent=f.name;$("hamName").classList.add("has");markDirty();};
+$("p_ham").onchange=onHam; $("p_hamF").onchange=onHam;
+$("f_w").addEventListener("input",()=>{autoDim("w");buildFrame();});
+$("f_h").addEventListener("input",()=>{autoDim("h");buildFrame();});
+
+function buildFrame(){
+ const W=+$("f_w").value,H=+$("f_h").value;
+ if(!S.box||!W||!H){S.frame=null;$("go2").disabled=true;
+  $("boxSize").textContent="—";$("scaleOut").textContent="—";$("sigPill").innerHTML="";
+  $("m1").innerHTML=S.box?'<div class="note cau">가로·세로 실제 길이를 넣어야 좌표가 계산된다.</div>':"";
+  drawFace();return;}
+ S.frame=TapCoords.PhotoFrame(S.box,[{x:0,y:0},{x:W,y:0},{x:W,y:H},{x:0,y:H}]);
+ if(!S.frame){$("go2").disabled=true;$("m1").innerHTML='<div class="note warn">박스가 뒤집혔거나 한 줄로 겹쳤다. 모서리를 다시 배치하라.</div>';drawFace();return;}
+ const sig=S.frame.sigmaMm(),mpp=S.frame.mmPerPx();
+ $("boxSize").textContent=W+" × "+H+" mm";
+ $("scaleOut").textContent=isFinite(mpp)?mpp.toFixed(2)+" mm/px":"—";
+ const ok=isFinite(sig)&&sig<=TapCoords.SPEC.sigmaMax;
+ $("sigPill").innerHTML=isFinite(sig)?('<span class="pill '+(ok?"ok":"bad")+'">좌표 오차 σ '+sig.toFixed(0)+' mm</span>'):"";
+ $("m1").innerHTML=ok?"":'<div class="note cau">좌표 오차가 '+sig.toFixed(0)+' mm 다. 사진을 더 가까이·정면에서 찍거나 박스를 넓게 잡으면 줄어든다. 그대로 진행할 수는 있다.</div>';
+ $("go2").disabled=false; drawFace(); markDirty();}
+
+function fitCanvas(cv,w,h){
+ const dpr=Math.min(devicePixelRatio||1,2),cw=cv.parentElement.clientWidth||360;
+ const ch=Math.max(120,Math.round(cw*h/w));
+ cv.style.height=ch+"px";cv.width=Math.round(cw*dpr);cv.height=Math.round(ch*dpr);
+ const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);return{g,W:cw,H:ch};}
+
+function drawFace(){
+ const cv=$("faceCv");if(!S.face){return;}
+ const {g,W,H}=fitCanvas(cv,S.face.w,S.face.h);
+ g.clearRect(0,0,W,H);g.drawImage(S.face.img,0,0,W,H);
+ const sx=W/S.face.w,sy=H/S.face.h,P=S.box.map(p=>({x:p.x*sx,y:p.y*sy}));
+ g.strokeStyle=CSS("--accent");g.lineWidth=2.5;g.beginPath();
+ P.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));g.closePath();g.stroke();
+ /* 치수선 — 아래변(가로), 왼변(세로) */
+ const wv=$("f_w").value||"?",hv=$("f_h").value||"?";
+ dimLine(g,P[0],P[1],wv+" mm",W,H);
+ dimLine(g,P[3],P[0],hv+" mm",W,H);
+ P.forEach((p,i)=>{g.beginPath();g.arc(p.x,p.y,11,0,7);
+  g.fillStyle=CSS("--accent");g.globalAlpha=.85;g.fill();g.globalAlpha=1;
+  g.strokeStyle=CSS("--accent-ink");g.lineWidth=2;g.stroke();
+  g.fillStyle=CSS("--accent-ink");g.font="600 11px monospace";g.textAlign="center";g.textBaseline="middle";
+  g.fillText(String(i+1),p.x,p.y);});
+ g.fillStyle=CSS("--accent");g.font="600 11px monospace";g.textAlign="left";g.textBaseline="top";
+ g.fillText("① 좌하 ② 우하 ③ 우상 ④ 좌상",8,8);}
+
+function dimLine(g,a,b,txt,CW,CH){
+ g.save();g.strokeStyle=CSS("--rust");g.fillStyle=CSS("--rust");g.lineWidth=1.6;
+ const ux=b.x-a.x,uy=b.y-a.y,L=Math.hypot(ux,uy)||1;
+ let nx=-uy/L,ny=ux/L;const off=16;
+ /* 라벨이 캔버스 밖으로 나가면 반대쪽(박스 안)으로 접는다 */
+ if(CW){const mx=(a.x+b.x)/2+nx*(off+10),my=(a.y+b.y)/2+ny*(off+10);
+  if(mx<34||mx>CW-34||my<14||my>CH-14){nx=-nx;ny=-ny;}}
+ const A={x:a.x+nx*off,y:a.y+ny*off},B={x:b.x+nx*off,y:b.y+ny*off};
+ g.beginPath();g.moveTo(A.x,A.y);g.lineTo(B.x,B.y);g.stroke();
+ [[A,{x:ux/L,y:uy/L}],[B,{x:-ux/L,y:-uy/L}]].forEach(([p,d])=>{
+  g.beginPath();g.moveTo(p.x,p.y);
+  g.lineTo(p.x+d.x*9-d.y*4,p.y+d.y*9+d.x*4);g.lineTo(p.x+d.x*9+d.y*4,p.y+d.y*9-d.x*4);
+  g.closePath();g.fill();});
+ g.beginPath();g.moveTo(a.x,a.y);g.lineTo(A.x,A.y);g.moveTo(b.x,b.y);g.lineTo(B.x,B.y);
+ g.setLineDash([3,3]);g.stroke();g.setLineDash([]);
+ const m={x:(A.x+B.x)/2+nx*10,y:(A.y+B.y)/2+ny*10};
+ g.font="600 12px monospace";g.textAlign="center";g.textBaseline="middle";
+ const tw=g.measureText(txt).width+8;
+ g.fillStyle=CSS("--surface");g.fillRect(m.x-tw/2,m.y-9,tw,18);
+ g.fillStyle=CSS("--rust");g.fillText(txt,m.x,m.y);
+ g.restore();}
+
+/* 모서리 끌기 */
+function evPt(cv,ev){const r=cv.getBoundingClientRect();
+ const t=ev.touches&&ev.touches[0]?ev.touches[0]:ev;
+ return{x:t.clientX-r.left,y:t.clientY-r.top,W:r.width,H:r.height};}
+(function(){const cv=$("faceCv");
+ const down=ev=>{if(!S.face)return;ev.preventDefault();
+  const p=evPt(cv,ev),sx=p.W/S.face.w,sy=p.H/S.face.h;
+  let bi=-1,bd=1e9;S.box.forEach((q,i)=>{const d=Math.hypot(q.x*sx-p.x,q.y*sy-p.y);if(d<bd){bd=d;bi=i;}});
+  S.drag=bd<30?bi:-1;};
+ const move=ev=>{if(S.drag<0||!S.face)return;ev.preventDefault();
+  const p=evPt(cv,ev),sx=p.W/S.face.w,sy=p.H/S.face.h;
+  S.box[S.drag]={x:Math.max(0,Math.min(S.face.w,p.x/sx)),y:Math.max(0,Math.min(S.face.h,p.y/sy))};
+  if(BOX.locked){BOX.locked=false;syncLock();}
+  buildFrame();};
+ const up=()=>{S.drag=-1;};
+ cv.addEventListener("mousedown",down);cv.addEventListener("touchstart",down,{passive:false});
+ window.addEventListener("mousemove",move);cv.addEventListener("touchmove",move,{passive:false});
+ window.addEventListener("mouseup",up);cv.addEventListener("touchend",up);})();
+
+/* ================= 조사 화면 ================= */
+function drawSurvey(){
+ const cv=$("surveyCv");if(!S.face)return;
+ const {g,W,H}=fitCanvas(cv,S.face.w,S.face.h);
+ g.clearRect(0,0,W,H);g.drawImage(S.face.img,0,0,W,H);
+ const sx=W/S.face.w,sy=H/S.face.h,P=S.box.map(p=>({x:p.x*sx,y:p.y*sy}));
+ g.strokeStyle=CSS("--accent");g.lineWidth=1.6;g.globalAlpha=.7;g.beginPath();
+ P.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));g.closePath();g.stroke();g.globalAlpha=1;
+ const col={"보수부위":CSS("--steel"),"열화부위":CSS("--rust"),"건전부":CSS("--good"),"기타":CSS("--muted")};
+ S.rows.forEach(r=>{const q={x:r.px*sx,y:r.py*sy};
+  g.beginPath();g.arc(q.x,q.y,7,0,7);g.fillStyle=col[r.feat]||CSS("--muted");g.fill();
+  g.strokeStyle=CSS("--surface");g.lineWidth=2;g.stroke();
+  g.fillStyle=CSS("--surface");g.font="600 9px monospace";g.textAlign="center";g.textBaseline="middle";
+  g.fillText(String(r.no),q.x,q.y);});
+ if(S.sel){const q={x:S.sel.px*sx,y:S.sel.py*sy};
+  g.beginPath();g.arc(q.x,q.y,13,0,7);g.strokeStyle=CSS("--accent");g.lineWidth=3;g.stroke();
+  g.beginPath();g.moveTo(q.x-18,q.y);g.lineTo(q.x+18,q.y);g.moveTo(q.x,q.y-18);g.lineTo(q.x,q.y+18);
+  g.lineWidth=1;g.stroke();}}
+
+$("surveyCv").addEventListener("click",ev=>{
+ if(!S.frame)return;const cv=$("surveyCv"),p=evPt(cv,ev);
+ const u=p.x*(S.face.w/p.W),v=p.y*(S.face.h/p.H);
+ const mm=S.frame.pxToMm(u,v);
+ /* 좌표가 계산되지 않으면 조용히 넘기지 말고 이유를 보인다 */
+ if(!Number.isFinite(p.W)||p.W<=0||!mm||!Number.isFinite(mm.x)||!Number.isFinite(mm.y)){
+  $("m2").innerHTML='<div class="note warn">좌표를 계산하지 못했다. 사진을 다시 불러오거나 화면을 회전했다가 되돌려라.</div>';return;}
+ $("m2").innerHTML="";
+ const W=+$("f_w").value,H=+$("f_h").value;
+ S.sel={px:u,py:v,x:mm.x,y:mm.y,rx:mm.x/W,ry:mm.y/H,sigma:S.frame.sigmaMm()};
+ $("selMm").textContent=Math.round(mm.x)+", "+Math.round(mm.y)+" mm";
+ $("selRel").textContent=(mm.x/W).toFixed(3)+", "+(mm.y/H).toFixed(3);
+ let near=null,nd=1e9;S.rows.forEach(r=>{const d=Math.hypot(r.x-mm.x,r.y-mm.y);if(d<nd){nd=d;near=r;}});
+ $("dupOut").innerHTML=(near&&nd<TapCoords.SPEC.dupMinMm)?'<span class="pill bad">'+Math.round(nd)+' mm 앞에 #'+near.no+'</span>':"";
+ drawSurvey();});
+
+document.querySelectorAll("#featRow button").forEach(b=>b.onclick=()=>{
+ document.querySelectorAll("#featRow button").forEach(x=>x.classList.remove("on"));
+ b.classList.add("on");S.feat=b.dataset.f;});
+
+/* ================= 3초 녹음 ================= */
+$("micOn").onclick=async()=>{
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){
+  $("micBanner").className="note warn";$("micBanner").textContent="이 브라우저는 마이크를 지원하지 않는다. 좌표와 구분만 기록된다.";return;}
+ try{AU.stream=await navigator.mediaDevices.getUserMedia(TapAudio.CONSTRAINTS);}
+ catch(e){$("micBanner").className="note warn";
+  $("micBanner").textContent="마이크 권한이 없다 ("+(e&&e.name||"오류")+"). 좌표와 구분만 기록된다.";return;}
+ const AC=window.AudioContext||window.webkitAudioContext;AU.ctx=new AC();
+ if(AU.ctx.state==="suspended")await AU.ctx.resume();
+ AU.fs=AU.ctx.sampleRate;
+ const v=TapAudio.verifyTrack(AU.stream.getAudioTracks()[0]);
+ AU.meta={sampleRate:AU.fs,agcDisabled:v.ok,settings:v.settings};
+ const src=AU.ctx.createMediaStreamSource(AU.stream);
+ AU.node=AU.ctx.createScriptProcessor(2048,1,1);
+ AU.node.onaudioprocess=e=>{const d=e.inputBuffer.getChannelData(0);
+  let mx=0;for(let i=0;i<d.length;i++){const a=Math.abs(d[i]);if(a>mx)mx=a;}
+  AU.level=Math.max(AU.level*0.7,mx);
+  if(AU.rec){for(let i=0;i<d.length&&AU.pos<AU.buf.length;i++)AU.buf[AU.pos++]=d[i];
+   $("recBar").style.width=(100*AU.pos/AU.buf.length).toFixed(0)+"%";
+   if(AU.pos>=AU.buf.length)finishRec();}};
+ src.connect(AU.node);AU.node.connect(AU.ctx.destination);
+ AU.on=true;$("micArea").classList.add("hide");$("recArea").classList.remove("hide");
+ const b=$("micBanner");b.className="note";
+ b.innerHTML="마이크 "+(AU.fs/1000).toFixed(1)+" kHz · "+
+  (v.ok?"자동이득제어·잡음억제·에코제거 <b>모두 해제됨</b>":"<b>"+v.stillOn.join("·")+"가 꺼지지 않았다</b> — 이 기기는 진폭 비교에 쓸 수 없다");
+ $("micArea").classList.remove("hide");$("micOn").classList.add("hide");
+ $("recState").textContent="칠 자리와 부위 구분을 고르고 시작하라";
+ drawWave(null);meterLoop();};
+function meterLoop(){
+ if(!AU.on)return;
+ if(AU.rec){ /* 담기는 대로 실시간으로 그린다 */
+  drawWave(AU.buf.subarray(0,AU.pos),-1,AU.buf.length);
+  const left=(TapAudio.SPEC.durSec-AU.pos/AU.fs);
+  $("recState").textContent="수집 중 — "+(left>0?left.toFixed(1):"0.0")+" 초 남음";}
+ else if(!S.pending)drawWave(null);
+ AU.raf=requestAnimationFrame(meterLoop);}
+$("btnRec").onclick=()=>{
+ if(!S.sel){alert("먼저 사진에서 칠 자리를 찍어라");return;}
+ if(!S.feat){alert("부위 구분을 골라라");return;}
+ if(AU.rec)return;
+ S.pending=null;setQC(null);
+ AU.buf=new Float32Array(Math.round(TapAudio.SPEC.durSec*AU.fs));AU.pos=0;AU.rec=true;
+ $("recState").textContent="수집 중 — 3.0 초 남음";
+ $("btnRec").disabled=true;$("btnNext").disabled=true;$("recBar").style.width="0%";};
+/* 3초가 끝나 저장된 뒤에만 열린다 */
+$("btnNext").onclick=()=>{
+ S.sel=null;S.pending=null;$("f_note").value="";
+ $("f_note").parentElement.classList.remove("has");
+ $("selMm").textContent="—";$("selRel").textContent="—";$("dupOut").innerHTML="";
+ setQC(null);drawWave(null);$("recBar").style.width="0%";
+ $("recState").textContent="사진에서 다음 자리를 찍어라";
+ $("btnNext").disabled=true;drawSurvey();
+ $("surveyCv").scrollIntoView({block:"center",behavior:"smooth"});};
+function finishRec(){
+ AU.rec=false;$("btnRec").disabled=false;
+ const seg=AU.buf.subarray(0,AU.pos);
+ const noise=TapAudio.rms(seg,0,Math.round(0.2*AU.fs));
+ const idx=TapAudio.findOnset(seg,AU.fs,noise);
+ const q=TapAudio.assess(seg,AU.fs,idx);
+ S.pending={seg:Float32Array.from(seg),idx,q};
+ setQC(q);drawWave(seg,idx);
+ if(!q.retake&&S.sel&&S.feat){const n=addRow();
+  $("recState").textContent="#"+n+" 저장됨 ("+q.nTaps+"타)";
+  $("btnNext").disabled=false;return;}
+ $("recState").textContent=q.retake?"품질 미달 — 다시 하라"
+  :(!S.sel?"칠 자리를 먼저 찍어라":(!S.feat?"부위 구분을 먼저 골라라":"수집 완료 ("+q.nTaps+"타)"));}
+function setQC(q){
+ $("qPeak").textContent=q?q.peak.toFixed(2):"—";
+ $("qSnr").textContent=q&&q.snrDb!==null?q.snrDb.toFixed(0)+" dB":"—";
+ $("qOn").textContent=q&&q.onsetMs!==null?q.onsetMs+" ms":"—";
+ $("qcMsg").innerHTML=q&&q.reasons.length?'<div class="note '+(q.retake?"warn":"cau")+'">'+q.reasons.join("<br>")+'</div>':"";}
+function drawWave(seg,idx,fullN){
+ const cv=$("wave");if(!cv||!cv.parentElement.clientWidth)return;
+ const dpr=Math.min(devicePixelRatio||1,2),W=cv.parentElement.clientWidth,H=84;
+ cv.style.height=H+"px";cv.width=W*dpr;cv.height=H*dpr;
+ const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);
+ g.clearRect(0,0,W,H);g.fillStyle=CSS("--surface-2");g.fillRect(0,0,W,H);
+ g.strokeStyle=CSS("--line");g.beginPath();g.moveTo(0,H/2);g.lineTo(W,H/2);g.stroke();
+ if(!seg){const w=Math.min(W,W*Math.min(1,AU.level*2.2));
+  g.fillStyle=AU.level>0.95?CSS("--rust"):CSS("--accent");g.fillRect(0,H/2-6,w,12);
+  g.fillStyle=CSS("--muted");g.font="11px monospace";g.textAlign="left";
+  g.fillText("입력 "+(20*Math.log10(AU.level+1e-6)).toFixed(0)+" dBFS",8,16);return;}
+ /* fullN 이 오면 시간축을 3초로 고정해 파형이 왼쪽부터 자라게 한다 */
+ const N=fullN||seg.length, step=Math.max(1,Math.floor(N/W)), nx=Math.min(W,Math.ceil(seg.length/step));
+ g.strokeStyle=CSS("--accent");g.lineWidth=1;g.beginPath();
+ for(let x=0;x<nx;x++){let mn=1,mx=-1;const s0=x*step,s1=Math.min(seg.length,s0+step);
+  for(let i=s0;i<s1;i++){const v=seg[i];if(v<mn)mn=v;if(v>mx)mx=v;}
+  if(mx<mn)continue;
+  g.moveTo(x,H/2-mx*H/2*.92);g.lineTo(x,H/2-mn*H/2*.92);}
+ g.stroke();
+ if(fullN&&nx<W){g.strokeStyle=CSS("--rust");g.lineWidth=1.5;
+  g.beginPath();g.moveTo(nx,4);g.lineTo(nx,H-4);g.stroke();}
+ for(let k=1;k<3;k++){const x=k*W/3;g.strokeStyle=CSS("--line");g.lineWidth=1;
+  g.beginPath();g.moveTo(x,H-12);g.lineTo(x,H);g.stroke();
+  g.fillStyle=CSS("--muted");g.font="9px monospace";g.textAlign="center";g.fillText(k+"s",x,H-14);}
+ if(idx>=0){const x=idx/N*W;g.strokeStyle=CSS("--rust");g.lineWidth=1.5;
+  g.beginPath();g.moveTo(x,0);g.lineTo(x,H);g.stroke();
+  g.fillStyle=CSS("--rust");g.font="10px monospace";g.fillText("온셋",x+4,12);}}
+
+/* ================= 기록 ================= */
+$("btnAdd").onclick=()=>{
+ if(!S.sel){alert("먼저 사진에서 칠 자리를 찍어라");return;}
+ if(!S.feat){alert("부위 구분을 골라라");return;}
+ if(AU.on&&(!S.pending||S.pending.q.retake)){
+  if(!confirm("녹음이 없거나 품질이 미달이다. 좌표와 구분만 기록할까?"))return;}
+ addRow();};
+/* 3초 녹음이 품질을 통과하면 여기로 자동 저장된다 */
+function addRow(){
+ const no=++S.seq;
+ const r={no,tapId:"T"+String(no).padStart(3,"0"),t:new Date().toISOString(),
+  px:S.sel.px,py:S.sel.py,x:S.sel.x,y:S.sel.y,rx:S.sel.rx,ry:S.sel.ry,sigma:S.sel.sigma,
+  feat:S.feat,note:$("f_note").value||"",
+  audio:(S.pending&&!S.pending.q.retake)?{seg:S.pending.seg,fs:AU.fs,idx:S.pending.idx,q:S.pending.q}:null};
+ S.rows.push(r); saveTap(r); saveSession();
+ if(!AU.on){ /* 마이크 없이 기록할 때는 여기서 정리한다 */
+  S.sel=null;$("f_note").value="";$("f_note").parentElement.classList.remove("has");
+  $("selMm").textContent="—";$("selRel").textContent="—";$("dupOut").innerHTML="";}
+ S.pending=null;
+ refreshList();drawSurvey();return no;}
+function refreshList(){
+ const c={"보수부위":0,"열화부위":0,"건전부":0};
+ S.rows.forEach(r=>{if(c[r.feat]!==undefined)c[r.feat]++;});
+ $("cAll").textContent=S.rows.length;$("cRep").textContent=c["보수부위"];
+ $("cDel").textContent=c["열화부위"];$("cSnd").textContent=c["건전부"];
+ const L=$("tapList");
+ if(!S.rows.length){L.innerHTML='<div class="empty">아직 기록된 부위가 없다</div>';return;}
+ L.innerHTML=S.rows.slice().reverse().map(r=>{
+  const cls=r.feat==="열화부위"?"bad":(r.feat==="건전부"?"ok":"neu");
+  const a=r.audio?'<span class="pill ok">'+r.audio.q.nTaps+'타</span>':'<span class="pill neu">음향없음</span>';
+  return '<div class="ti"><span class="id">#'+r.no+'</span><span class="pill '+cls+'">'+r.feat+'</span>'+
+   '<span class="co">'+Math.round(r.x)+', '+Math.round(r.y)+'</span>'+a+
+   '<button class="danger" data-del="'+r.no+'">삭제</button></div>';}).join("");
+ L.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
+  const gone=S.rows.find(r=>r.no==b.dataset.del);
+  S.rows=S.rows.filter(r=>r.no!=b.dataset.del);
+  if(gone)tapDel(gone.tapId); saveSession();
+  refreshList();drawSurvey();});}
+
+/* ================= 파일명 · CSV ================= */
+const safe=s=>(s||"").trim().replace(/[\\/:*?"<>|\s]+/g,"_")||"미기입";
+function baseName(){
+ const d=$("f_date").value.replace(/-/g,"");
+ const now=new Date(),hh=String(now.getHours()).padStart(2,"0"),mm=String(now.getMinutes()).padStart(2,"0");
+ return d+"_"+hh+mm+"-"+safe($("f_bridge").value)+"-"+safe($("f_member").value)+"-"+safe($("f_loc").value);}
+const q=v=>{const s=String(v==null?"":v);return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;};
+function buildCsv(base){
+ const L=[];
+ L.push("# 두들김 조사 기록");
+ [["조사날짜",$("f_date").value],["교량명",$("f_bridge").value],["교량부재",$("f_member").value],
+  ["위치",$("f_loc").value],["점검원",$("f_insp").value],
+  ["보수재 설계두께(mm)",$("f_th").value],
+  ["조사면 가로(mm)",$("f_w").value],["조사면 세로(mm)",$("f_h").value],
+  ["좌표 오차 sigma(mm)",S.frame?S.frame.sigmaMm().toFixed(1):""],
+  ["사진 축척(mm/px)",S.frame?S.frame.mmPerPx().toFixed(3):""],
+  ["조사면 사진",base+".jpg"],["조사면 사진 원본명",S.face?S.face.name:""],
+  ["조사면 사진 크기(px)",S.face?S.face.w+"x"+S.face.h:""],
+  ["촬영 방식",S.face?(S.face.camera?"앱 내 카메라":"파일 선택/기기 카메라"):""],
+  ["박스 비율",arLabel()+(BOX.locked?" (고정)":" (모서리 수동)")],
+  ["조사면 사진 용량(byte)",S.face?S.face.size:""],
+  ["조사면 사진 촬영시각",S.face?new Date(S.face.lastModified).toISOString():""],
+  ["망치 사진",S.ham?base+"-hammer.jpg":""],["망치 사진 원본명",S.ham?S.ham.name:""],
+  ["망치 질량(g)",$("f_hmass").value],["망치 구분",$("f_hid").value],
+  ["망치 비고",$("f_hnote").value],
+  ["마이크 표본화(Hz)",AU.meta?AU.meta.sampleRate:""],
+  ["자동이득제어 해제",AU.meta?(AU.meta.agcDisabled?"예":"아니오"):""],
+  ["기록 부위 수",S.rows.length],["생성시각",new Date().toISOString()],
+ ].forEach(([k,v])=>L.push("# "+q(k)+","+q(v)));
+ L.push("");
+ L.push(["no","tap_id","시각","x_mm","y_mm","x_rel","y_rel","sigma_mm",
+  "부위구분","비고","사진_px_u","사진_px_v","음향파일","타격수","최대진폭","SNR_dB","온셋_ms","클리핑"].map(q).join(","));
+ S.rows.forEach(r=>{
+  const a=r.audio;
+  L.push([r.no,r.tapId,r.t,r.x.toFixed(1),r.y.toFixed(1),r.rx.toFixed(4),r.ry.toFixed(4),
+   r.sigma.toFixed(1),r.feat,r.note,r.px.toFixed(1),r.py.toFixed(1),
+   a?base+"-"+r.tapId+".wav":"",a?a.q.nTaps:"",a?a.q.peak:"",a&&a.q.snrDb!=null?a.q.snrDb:"",
+   a?a.q.onsetMs:"",a?(a.q.clipped?"예":"아니오"):""].map(q).join(","));});
+ return L.join("\r\n");}
+
+let CSV="",BASE="";
+$("go3").onclick=()=>{
+ const miss=[];
+ if(!$("f_date").value)miss.push("조사 날짜");
+ if(!$("f_bridge").value)miss.push("교량명");
+ if(!$("f_member").value)miss.push("교량부재");
+ if(!$("f_loc").value)miss.push("위치");
+ if(!S.face)miss.push("조사면 사진");
+ if(!S.frame)miss.push("가로·세로 실제 길이");
+ if(!S.rows.length)miss.push("기록된 부위");
+ if(miss.length){
+  $("saveGate").innerHTML='<div class="note warn"><b>저장할 수 없다</b><br>'+miss.join(" / ")+' 이(가) 없다.</div>';
+  $("saveBody").classList.add("hide");setStep(3);return;}
+ BASE=baseName();CSV=buildCsv(BASE);
+ const nAud=S.rows.filter(r=>r.audio).length;
+ $("saveGate").innerHTML='<div class="note"><b>준비됨</b> · 부위 '+S.rows.length+'개 · 음향 '+nAud+'개 · 좌표 오차 σ '+S.frame.sigmaMm().toFixed(0)+' mm</div>';
+ $("fnCsv").textContent=BASE+".csv";
+ $("fnFace").textContent=BASE+".jpg   ← 조사면 사진";
+ $("fnHam").textContent=S.ham?(BASE+"-hammer.jpg   ← 망치 사진"):"망치 사진 없음";
+ $("dlFace").textContent=nAud?("사진·음향 저장 ("+(1+(S.ham?1:0)+nAud)+"개)"):"사진 저장";
+ $("csvOut").textContent=CSV.length>4000?CSV.slice(0,4000)+"\n… ("+CSV.length+"자)":CSV;
+ $("saveBody").classList.remove("hide");setStep(3);};
+/* 저장 — 뷰어가 파일 저장 기능을 주면 그것을 쓰고, 아니면 보통의 다운로드 링크로 떨어진다.
+   뷰어의 허용 확장자에 wav 가 없어 음향은 배포본에서만 받아진다. */
+let DL=null;
+if(window.claude&&window.claude.use)window.claude.use("downloads").then(d=>{DL=d;},()=>{});
+async function saveOne(data,name){
+ if(DL){try{await DL.save({filename:name,data});return "저장됨";}
+  catch(e){const c=e&&e.code;
+   if(c==="declined")return "취소함";
+   if(c==="too_large")return "용량 초과";
+   if(c!=="rejected_extension"&&c!=="extension_not_enabled")return c||"실패";}}
+ try{const a=document.createElement("a");
+  a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data]));
+  a.download=name;document.body.appendChild(a);a.click();a.remove();
+  return DL?"이 미리보기에서는 받아지지 않는다":"내려받기 시도";}catch(e){return "막힘";}}
+function dlLog(lines){$("dlNote").innerHTML='<div class="note info"><b>저장 결과</b><br>'+
+ lines.join("<br>")+'</div>';}
+$("dlCsv").onclick=async()=>{$("dlCsv").disabled=true;
+ const r=await saveOne(new Blob(["\uFEFF"+CSV],{type:"text/csv"}),BASE+".csv");
+ dlLog([BASE+".csv — "+r]); $("dlCsv").disabled=false;};
+$("dlFace").onclick=async()=>{$("dlFace").disabled=true;const log=[];
+ const push=async(d,n)=>{log.push(n+" — "+await saveOne(d,n));dlLog(log);};
+ if(S.face)await push(S.face.file,BASE+".jpg");
+ if(S.ham)await push(S.ham.file,BASE+"-hammer.jpg");
+ const auds=S.rows.filter(r=>r.audio);
+ for(const r of auds){const w=TapAudio.encodeWav(r.audio.seg,r.audio.fs);
+  await push(w.blob,BASE+"-"+r.tapId+".wav");}
+ if(auds.length&&DL)log.push("<b>뷰어가 wav 저장을 허용하지 않는다.</b> 음향은 배포본에서 받는다.");
+ dlLog(log); $("dlFace").disabled=false;};
+$("cpCsv").onclick=async()=>{try{await navigator.clipboard.writeText(CSV);
+ $("cpCsv").textContent="복사됨";setTimeout(()=>$("cpCsv").textContent="CSV 복사",1500);}
+ catch(e){alert("복사 권한이 없다. 아래 미리보기를 직접 선택해 복사하라");}};
+
+/* ================= 자동 저장 · 이어하기 =================
+   현장에서 30타를 치는 도중 전화가 오거나 실수로 새로고침하면 지금까지의
+   기록이 전부 사라진다. 타점이 하나 쌓일 때마다 기기에 남겨 둔다.
+   음향이 타점당 288 KB 라 localStorage 로는 안 되고 IndexedDB 를 쓴다.
+   타점은 개별 레코드로 넣어, 한 타 추가에 8 MB 를 다시 쓰지 않게 한다. */
+const IDB={name:"tapsurvey",ver:1,stores:["kv","taps"]};
+let dbP=null;
+function db(){
+ if(dbP)return dbP;
+ dbP=new Promise((res,rej)=>{
+  if(!window.indexedDB){rej(new Error("no idb"));return;}
+  const r=indexedDB.open(IDB.name,IDB.ver);
+  r.onupgradeneeded=()=>{const d=r.result;
+   IDB.stores.forEach(n=>{if(!d.objectStoreNames.contains(n))d.createObjectStore(n);});};
+  r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error);});
+ return dbP;}
+function tx(store,mode,fn){return db().then(d=>new Promise((res,rej)=>{
+ const t=d.transaction(store,mode),o=t.objectStore(store);let out;
+ out=fn(o); t.oncomplete=()=>res(out&&out.result!==undefined?out.result:out);
+ t.onerror=()=>rej(t.error);}));}
+const kvPut=(k,v)=>tx("kv","readwrite",o=>o.put(v,k));
+const kvGet=k=>tx("kv","readonly",o=>o.get(k));
+const tapPut=(k,v)=>tx("taps","readwrite",o=>o.put(v,k));
+const tapDel=k=>tx("taps","readwrite",o=>o.delete(k));
+const tapAll=()=>tx("taps","readonly",o=>o.getAll());
+async function idbWipe(){try{
+ await tx("kv","readwrite",o=>o.clear());
+ await tx("taps","readwrite",o=>o.clear());}catch(e){}}
+
+const F32toI16=f=>{const n=f.length,o=new Int16Array(n);
+ for(let i=0;i<n;i++){let v=f[i];if(v>1)v=1;else if(v<-1)v=-1;o[i]=v<0?v*0x8000:v*0x7fff;}return o;};
+const I16toF32=i=>{const n=i.length,o=new Float32Array(n);
+ for(let k=0;k<n;k++)o[k]=i[k]/(i[k]<0?0x8000:0x7fff);return o;};
+
+const FORMIDS=["f_date","f_bridge","f_member","f_loc","f_insp","f_th",
+               "f_w","f_h","f_hid","f_hmass","f_hnote"];
+let saveT=0, saveOn=true;
+function markDirty(){if(!saveOn)return;clearTimeout(saveT);saveT=setTimeout(saveSession,600);}
+async function saveSession(){
+ if(!saveOn)return;
+ try{
+  const form={};FORMIDS.forEach(i=>{const e=$(i);if(e)form[i]=e.value;});
+  await kvPut("session",{v:1,t:Date.now(),form,
+   box:S.box?S.box.map(p=>({x:p.x,y:p.y})):null,
+   locked:BOX.locked,ar:BOX.ar,seq:S.seq,step:S.step,
+   face:S.face?{blob:S.face.file,name:S.face.name,size:S.face.size,type:S.face.type,
+     lastModified:S.face.lastModified,w:S.face.w,h:S.face.h,camera:S.face.camera||null}:null,
+   ham:S.ham?{blob:S.ham.file,name:S.ham.name,size:S.ham.size,type:S.ham.type,
+     lastModified:S.ham.lastModified}:null});
+ }catch(e){}}
+async function saveTap(r){
+ if(!saveOn)return;
+ try{await tapPut(r.tapId,{no:r.no,tapId:r.tapId,t:r.t,px:r.px,py:r.py,x:r.x,y:r.y,
+  rx:r.rx,ry:r.ry,sigma:r.sigma,feat:r.feat,note:r.note,
+  audio:r.audio?{fs:r.audio.fs,idx:r.audio.idx,q:r.audio.q,pcm:F32toI16(r.audio.seg)}:null});
+ }catch(e){}}
+
+async function checkResume(){
+ let sess=null,taps=[];
+ try{sess=await kvGet("session"); taps=(await tapAll())||[];}catch(e){return;}
+ if(!sess||(!taps.length&&!sess.face))return;
+ const f=sess.form||{};
+ const who=[f.f_bridge,f.f_member,f.f_loc].filter(Boolean).join(" · ")||"이름 없는 조사";
+ const d=new Date(sess.t),hh=String(d.getHours()).padStart(2,"0"),mm=String(d.getMinutes()).padStart(2,"0");
+ const nAud=taps.filter(t=>t.audio).length;
+ $("resumeBox").innerHTML='<div class="note"><b>하던 조사가 남아 있다</b><br>'+
+  who+' · 타점 '+taps.length+'개(음향 '+nAud+') · '+
+  (d.getMonth()+1)+'/'+d.getDate()+' '+hh+':'+mm+
+  '<div class="btnrow"><button class="primary" id="doResume">이어서 하기</button>'+
+  '<button class="ghost danger" id="dropResume">지우고 새로</button></div></div>';
+ $("doResume").onclick=()=>doResume(sess,taps);
+ $("dropResume").onclick=async()=>{
+  if(!confirm("남아 있는 기록을 지운다. 되돌릴 수 없다."))return;
+  await idbWipe();$("resumeBox").innerHTML="";};}
+
+function doResume(sess,taps){
+ saveOn=false;
+ const f=sess.form||{};
+ FORMIDS.forEach(i=>{const e=$(i);if(e&&f[i]!==undefined){e.value=f[i];
+  if(e.parentElement&&e.parentElement.classList.contains("fw"))
+   e.parentElement.classList.toggle("has",!!e.value);}});
+ refreshTag();
+ BOX.ar=sess.ar||4/3; BOX.locked=sess.locked!==false;
+ S.seq=sess.seq||taps.length;
+ S.rows=taps.slice().sort((a,b)=>a.no-b.no).map(t=>({
+  no:t.no,tapId:t.tapId,t:t.t,px:t.px,py:t.py,x:t.x,y:t.y,rx:t.rx,ry:t.ry,
+  sigma:t.sigma,feat:t.feat,note:t.note,
+  audio:t.audio?{fs:t.audio.fs,idx:t.audio.idx,q:t.audio.q,seg:I16toF32(t.audio.pcm)}:null}));
+ if(sess.ham&&sess.ham.blob){
+  S.ham={file:new File([sess.ham.blob],sess.ham.name||"hammer.jpg",{type:sess.ham.type||"image/jpeg"}),
+   name:sess.ham.name,size:sess.ham.size,type:sess.ham.type,lastModified:sess.ham.lastModified};
+  if(S.hamUrl)URL.revokeObjectURL(S.hamUrl);
+  S.hamUrl=URL.createObjectURL(sess.ham.blob);
+  $("hamThumb").src=S.hamUrl;$("hamThumb").classList.remove("hide");
+  $("hamName").textContent=sess.ham.name||"망치 사진";$("hamName").classList.add("has");}
+ const finish=()=>{saveOn=true;refreshList();syncLock();
+  $("resumeBox").innerHTML='<div class="note ok">이어서 하는 중이다. 타점 '+S.rows.length+'개를 되살렸다.</div>';
+  setStep(S.rows.length?2:1);};
+ if(sess.face&&sess.face.blob){
+  const img=new Image(),url=URL.createObjectURL(sess.face.blob);
+  img.onload=()=>{
+   S.face={img,file:new File([sess.face.blob],sess.face.name||"face.jpg",{type:sess.face.type||"image/jpeg"}),
+    name:sess.face.name,size:sess.face.size,type:sess.face.type,
+    lastModified:sess.face.lastModified,w:sess.face.w,h:sess.face.h,camera:sess.face.camera};
+   S.box=sess.box&&sess.box.length===4?sess.box:presetBox(S.face.w,S.face.h);
+   $("faceStage").classList.remove("hide");$("faceRead").classList.remove("hide");
+   $("faceName").textContent=(sess.face.name||"사진")+"  ·  "+S.face.w+"×"+S.face.h+" px";
+   $("faceName").classList.add("has");
+   buildFrame();finish();};
+  img.onerror=()=>{finish();};
+  img.src=url;
+ } else finish();}
+
+/* ================= 깃허브 업로드 =================
+   사용자의 저장소에 사용자의 토큰으로 올린다. 토큰은 이 브라우저의
+   localStorage 에만 있고 어디로도 전송되지 않는다 — 깃허브 API 외에는.
+   아티팩트 미리보기에서는 외부 요청이 막혀 있어 배포본에서만 동작한다. */
+const GHK="tapsurvey.gh";
+(function(){try{const c=JSON.parse(localStorage.getItem(GHK)||"{}");
+ if(c.repo)$("gh_repo").value=c.repo; $("gh_branch").value=c.branch||"main";
+ $("gh_path").value=c.path||"surveys"; if(c.tok)$("gh_tok").value=c.tok;}catch(e){}})();
+$("ghSave").onclick=()=>{
+ try{localStorage.setItem(GHK,JSON.stringify({repo:$("gh_repo").value.trim(),
+  branch:$("gh_branch").value.trim()||"main",path:$("gh_path").value.trim(),
+  tok:$("gh_tok").value}));
+  ghNote("설정을 이 브라우저에 기억했다.","");}catch(e){ghNote("이 브라우저가 저장을 막고 있다.","warn");}};
+$("ghClear").onclick=()=>{try{const c=JSON.parse(localStorage.getItem(GHK)||"{}");
+ delete c.tok;localStorage.setItem(GHK,JSON.stringify(c));}catch(e){}
+ $("gh_tok").value="";ghNote("토큰을 지웠다.","");};
+function ghNote(html,kind){$("ghNote").innerHTML='<div class="note '+(kind||"info")+'">'+html+'</div>';}
+const b64=d=>new Promise((res,rej)=>{const r=new FileReader();
+ r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;
+ r.readAsDataURL(d instanceof Blob?d:new Blob([d]));});
+async function ghPut(cfg,path,data,msg){
+ const url="https://api.github.com/repos/"+cfg.repo+"/contents/"+path.split("/").map(encodeURIComponent).join("/");
+ const head={Authorization:"Bearer "+cfg.tok,Accept:"application/vnd.github+json",
+             "X-GitHub-Api-Version":"2022-11-28"};
+ const body={message:msg,content:await b64(data),branch:cfg.branch};
+ let r=await fetch(url,{method:"PUT",headers:head,body:JSON.stringify(body)});
+ if(r.status===422||r.status===409){ /* 같은 이름이 이미 있으면 sha 를 붙여 덮어쓴다 */
+  const g=await fetch(url+"?ref="+encodeURIComponent(cfg.branch),{headers:head});
+  if(g.ok){body.sha=(await g.json()).sha;
+   r=await fetch(url,{method:"PUT",headers:head,body:JSON.stringify(body)});}}
+ if(!r.ok){let m="";try{m=(await r.json()).message||"";}catch(e){}
+  throw new Error(r.status+" "+(m||r.statusText));}
+ return (await r.json()).content.html_url;}
+$("ghPush").onclick=async()=>{
+ const cfg={repo:$("gh_repo").value.trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,""),
+  branch:$("gh_branch").value.trim()||"main",
+  path:$("gh_path").value.trim().replace(/^\/+|\/+$/g,""),tok:$("gh_tok").value.trim()};
+ if(!/^[^\/\s]+\/[^\/\s]+$/.test(cfg.repo)){ghNote("소유자/저장소 형식으로 넣어라 — 예 <span class=\"mono\">cnusal/tap-survey</span>","warn");return;}
+ if(!cfg.tok){ghNote("액세스 토큰이 없다.","warn");return;}
+ const dir=(cfg.path?cfg.path+"/":"")+BASE+"/";
+ const jobs=[[BASE+".csv",new Blob(["\uFEFF"+CSV],{type:"text/csv"})]];
+ if(S.face)jobs.push([BASE+".jpg",S.face.file]);
+ if(S.ham)jobs.push([BASE+"-hammer.jpg",S.ham.file]);
+ S.rows.filter(r=>r.audio).forEach(r=>jobs.push([BASE+"-"+r.tapId+".wav",
+   TapAudio.encodeWav(r.audio.seg,r.audio.fs).blob]));
+ $("ghPush").disabled=true;
+ const log=[];let done=0;
+ const show=()=>ghNote("<b>올리는 중 "+done+"/"+jobs.length+"</b><br>"+log.join("<br>"),"info");
+ let firstUrl=null;
+ for(const [name,data] of jobs){
+  try{const u=await ghPut(cfg,dir+name,data,"두들김 조사 "+BASE);
+   firstUrl=firstUrl||u; done++; log.push("✓ "+name);}
+  catch(e){log.push("✗ "+name+" — "+e.message);
+   const m=String(e.message);
+   if(/^40[13]/.test(m))log.push("토큰 권한(Contents: Read and write)과 저장소 이름을 확인하라.");
+   else if(/^404/.test(m))log.push("저장소나 브랜치가 없다. 비공개 저장소면 토큰이 그 저장소에 접근 가능해야 한다.");
+   else if(/Failed to fetch|NetworkError|blocked/i.test(m))log.push("<b>이 환경이 외부 요청을 막고 있다.</b> 깃허브 페이지스에 올린 배포본에서 다시 시도하라.");
+   show();$("ghPush").disabled=false;return;}
+  show();}
+ const tree="https://github.com/"+cfg.repo+"/tree/"+encodeURIComponent(cfg.branch)+"/"+
+  dir.replace(/\/$/,"").split("/").map(encodeURIComponent).join("/");
+ ghNote("<b>모두 올렸다 — "+done+"개.</b><br>"+log.join("<br>")+
+  '<br><a href="'+tree+'" target="_blank" rel="noopener">'+dir+'</a> 에 들어갔다',"");
+ $("ghPush").disabled=false;};
+
+/* ================= 이동 ================= */
+$("go1").onclick=()=>{
+ const miss=[];["f_date","f_bridge","f_member","f_loc"].forEach((id,i)=>{
+  if(!$(id).value)miss.push(["조사 날짜","교량명","교량부재","위치"][i]);});
+ if(miss.length){$("m0").innerHTML='<div class="note warn">'+miss.join(" / ")+' 을(를) 채워라.</div>';return;}
+ $("m0").innerHTML="";setStep(1);};
+$("back1").onclick=()=>setStep(0);
+$("go2").onclick=()=>{if(!S.frame){$("m1").innerHTML='<div class="note warn">사진과 가로·세로 길이가 있어야 한다.</div>';return;}setStep(2);};
+$("back2").onclick=()=>setStep(1);
+$("back3").onclick=()=>setStep(2);
+$("btnNew").onclick=()=>{if(!confirm("새 조사를 시작한다. 저장하지 않은 기록은 사라진다."))return;
+ S.rows=[];S.seq=0;S.sel=null;S.pending=null;S.face=null;S.ham=null;S.box=null;S.frame=null;
+ ["p_face","p_faceF","p_ham","p_hamF"].forEach(i=>{$(i).value="";});
+ $("hamThumb").classList.add("hide");
+ ["faceName","hamName"].forEach(i=>{$(i).textContent="아직 없음";$(i).classList.remove("has");});
+ $("faceStage").classList.add("hide");$("faceRead").classList.add("hide");
+ $("btnNext").disabled=true;$("go2").disabled=true;
+ BOX.locked=true;syncLock();$("f_w").value="";$("f_h").value="";
+ idbWipe();$("resumeBox").innerHTML="";
+ refreshList();setStep(0);};
+window.addEventListener("resize",()=>{if(S.step===1)drawFace();if(S.step===2)drawSurvey();});
+$("go2").disabled=true;syncLock();refreshList();refreshTag();setStep(0);
+FORMIDS.forEach(i=>{const e=$(i);if(e)e.addEventListener("input",markDirty);});
+checkResume();
+
+/* ---------- 오프라인 캐시 ---------- */
+if("serviceWorker" in navigator&&location.protocol==="https:"){
+ navigator.serviceWorker.register("./sw.js").then(reg=>{
+  $("swNote").innerHTML='오프라인 대비 <b>켜짐</b> · <a href="#" id="swUp">업데이트 확인</a>';
+  const up=$("swUp");if(up)up.onclick=async ev=>{ev.preventDefault();
+   $("swNote").textContent="확인 중…";
+   try{await reg.update();}catch(e){}
+   location.reload();};
+ }).catch(()=>{$("swNote").textContent="오프라인 대비 꺼짐 — 이 주소에서는 등록되지 않았다";});
+}else{
+ $("swNote").textContent=location.protocol==="https:"
+  ?"이 브라우저는 오프라인 대비를 지원하지 않는다"
+  :"오프라인 대비는 https 주소에서만 켜진다 (깃허브 페이지스)";}
+</script>
