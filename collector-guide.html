@@ -1,0 +1,425 @@
+<title>수집 창구 만들기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+KR:wght@300;400;500;600;700&display=swap">
+<style>
+:root{
+  --ground:#EAE9E5;--surface:#FAFAF8;--surface-2:#F0F0EC;--ink:#15191A;--ink-2:#3C4547;
+  --muted:#69716F;--line:#CBCCC6;--line-soft:#DEDFD9;
+  --accent:#14675A;--accent-soft:#D6E5E1;--accent-ink:#FFFFFF;
+  --rust:#9C3F16;--rust-soft:#F2DED2;--steel:#3D5468;--steel-soft:#DCE3E9;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --ground:#101312;--surface:#181C1B;--surface-2:#1F2423;--ink:#E7EAE7;--ink-2:#BAC2C0;
+  --muted:#8C9491;--line:#2D3433;--line-soft:#252B2A;
+  --accent:#52BCA8;--accent-soft:#153230;--accent-ink:#06110F;
+  --rust:#DD7F4D;--rust-soft:#321F14;--steel:#87A1BA;--steel-soft:#1A242E;
+}}
+:root[data-theme="dark"]{
+  --ground:#101312;--surface:#181C1B;--surface-2:#1F2423;--ink:#E7EAE7;--ink-2:#BAC2C0;
+  --muted:#8C9491;--line:#2D3433;--line-soft:#252B2A;
+  --accent:#52BCA8;--accent-soft:#153230;--accent-ink:#06110F;
+  --rust:#DD7F4D;--rust-soft:#321F14;--steel:#87A1BA;--steel-soft:#1A242E;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ground);color:var(--ink);
+ font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
+ font-size:16px;line-height:1.72;-webkit-font-smoothing:antialiased;word-break:keep-all}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+.wrap{max-width:760px;margin:0 auto;padding:0 22px 100px}
+a{color:var(--accent);text-underline-offset:2px}
+
+header{padding:52px 0 0}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.2em;
+ text-transform:uppercase;color:var(--accent);font-weight:600}
+h1{font-size:clamp(30px,5.5vw,44px);margin:14px 0 0;font-weight:700;letter-spacing:-.024em;
+ line-height:1.14;text-wrap:balance}
+.dek{font-size:17px;color:var(--ink-2);margin:16px 0 0;font-weight:300;max-width:60ch}
+.meta{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.badge{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.06em;
+ background:var(--surface);border:1px solid var(--line-soft);border-radius:20px;
+ padding:5px 12px;color:var(--ink-2)}
+
+.why{background:var(--surface);border:1px solid var(--line-soft);border-left:3px solid var(--accent);
+ border-radius:0 10px 10px 0;padding:18px 20px;margin:34px 0 0}
+.why h2{margin:0 0 8px;font-size:16.5px;font-weight:600}
+.why p{margin:0 0 8px;font-size:15px;color:var(--ink-2)}
+.why p:last-child{margin-bottom:0}
+
+h2.part{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.16em;
+ text-transform:uppercase;color:var(--muted);font-weight:600;margin:52px 0 0;
+ padding-bottom:9px;border-bottom:1px solid var(--line)}
+
+/* 절차 */
+.steps{margin-top:8px}
+.step{display:grid;grid-template-columns:44px 1fr;gap:18px;padding:26px 0 4px;position:relative}
+.step::before{content:"";position:absolute;left:21px;top:52px;bottom:-4px;width:1px;background:var(--line-soft)}
+.step:last-child::before{display:none}
+.sn{width:44px;height:44px;border-radius:50%;background:var(--surface);
+ border:1px solid var(--line);display:flex;align-items:center;justify-content:center;
+ font-family:"IBM Plex Mono",monospace;font-size:16px;font-weight:600;color:var(--accent);
+ position:relative;z-index:1}
+.step.warn .sn{border-color:var(--rust);color:var(--rust);background:var(--rust-soft)}
+.sbody{min-width:0}
+.sbody h3{margin:9px 0 0;font-size:18.5px;font-weight:600;letter-spacing:-.01em;line-height:1.4}
+.sbody p{margin:9px 0 0;color:var(--ink-2);font-size:15.5px}
+.sbody p b,.sbody strong{color:var(--ink);font-weight:600}
+.sbody ul{margin:10px 0 0;padding-left:19px;color:var(--ink-2);font-size:15.5px}
+.sbody li{margin-bottom:5px}
+.sbody li::marker{color:var(--accent)}
+.click{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--surface-2);
+ border:1px solid var(--line-soft);border-radius:6px;padding:2px 7px;white-space:nowrap;
+ display:inline-block;color:var(--ink)}
+.sep{color:var(--muted);margin:0 3px}
+
+.note{border-left:3px solid var(--steel);background:var(--steel-soft);border-radius:0 8px 8px 0;
+ padding:12px 15px;margin:14px 0 0;font-size:14.5px;color:var(--ink-2)}
+.note.bad{border-left-color:var(--rust);background:var(--rust-soft)}
+.note b{color:var(--ink)}
+.lab{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.12em;
+ text-transform:uppercase;font-weight:600;color:var(--steel);display:block;margin-bottom:3px}
+.note.bad .lab{color:var(--rust)}
+
+/* 코드 */
+.codewrap{margin:14px 0 0;border:1px solid var(--line-soft);border-radius:9px;overflow:hidden;
+ background:var(--surface-2)}
+.codebar{display:flex;align-items:center;justify-content:space-between;gap:10px;
+ padding:8px 10px 8px 14px;border-bottom:1px solid var(--line-soft);background:var(--surface)}
+.codebar span{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted)}
+.codebar button{font-family:inherit;font-size:13px;font-weight:600;border:1px solid var(--line);
+ background:var(--surface-2);color:var(--ink);border-radius:6px;padding:6px 13px;cursor:pointer}
+.codebar button:hover{border-color:var(--accent);color:var(--accent)}
+pre{margin:0;font-family:"IBM Plex Mono",monospace;font-size:11.5px;line-height:1.62;
+ padding:13px 14px;overflow-x:auto;max-height:340px;color:var(--ink-2)}
+
+/* 도면 */
+figure{margin:16px 0 0}
+figure svg{display:block;width:100%;height:auto;color:var(--ink)}
+figcaption{font-size:13px;color:var(--muted);margin-top:7px}
+.fbox{background:var(--surface);border:1px solid var(--line-soft);border-radius:9px;padding:12px 10px}
+
+/* 표 */
+.tw{overflow-x:auto;margin:18px 0 0;border:1px solid var(--line-soft);border-radius:9px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;min-width:460px}
+th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line-soft);vertical-align:top}
+th{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+ color:var(--muted);font-weight:600;background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td b{color:var(--ink)}
+
+.hand{background:var(--accent-soft);border:1px solid var(--accent);border-radius:10px;
+ padding:20px 22px;margin:26px 0 0}
+.hand h3{margin:0 0 10px;font-size:17px;font-weight:600}
+.hand dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0;font-size:15px}
+.hand dt{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--accent);
+ letter-spacing:.06em;padding-top:4px;font-weight:600}
+.hand dd{margin:0;color:var(--ink-2)}
+footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
+@media (max-width:520px){
+ .step{grid-template-columns:36px 1fr;gap:13px}
+ .sn{width:36px;height:36px;font-size:14px}
+ .step::before{left:17px;top:44px}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="eyebrow">두들김 조사 · 담당자용</div>
+  <h1>수집 창구 만들기</h1>
+  <p class="dek">조사자 여럿이 올린 자료를 한곳에 모으는 창구를 만든다. 한 번 만들면 끝이고, 그 뒤로 조사자에게는 <b>주소와 암구호</b>만 주면 된다.</p>
+  <div class="meta">
+    <span class="badge">약 10분</span>
+    <span class="badge">구글 계정 1개 (담당자만)</span>
+    <span class="badge">비용 없음</span>
+    <span class="badge">조사자는 계정 불필요</span>
+  </div>
+</header>
+
+<div class="why">
+  <h2>왜 이렇게 하나 — 조사자에게 토큰을 주면 안 되는 이유</h2>
+  <p>저장소 쓰기 토큰은 <b>그 저장소 전체에 대한 권한</b>이다. 받은 사람은 남의 조사 자료를 지우거나 덮어쓸 수 있고, 사람이 바뀌면 회수할 방법이 마땅치 않다. 열 명에게 나눠 주면 열 개의 열쇠가 돌아다니는 셈이다.</p>
+  <p>창구를 두면 <b>자격증명은 창구 안에만</b> 있다. 조사자는 «여기로 보내라» 는 주소만 안다. 그 주소로는 <b>올리는 것만</b> 되고 읽기도 삭제도 안 되므로, 주소가 새어도 남의 자료를 가져갈 수 없다.</p>
+</div>
+
+<h2 class="part">만들기</h2>
+<div class="steps">
+
+  <div class="step">
+    <div class="sn">1</div>
+    <div class="sbody">
+      <h3>새 프로젝트를 연다</h3>
+      <p><a href="https://script.google.com/home/projects/create" target="_blank" rel="noopener">script.google.com</a> 에 담당자 구글 계정으로 들어가 <span class="click">새 프로젝트</span> 를 누른다.</p>
+      <p>«제목 없는 프로젝트» 를 눌러 이름을 <span class="click">두들김 조사 수집</span> 정도로 바꿔 둔다. 나중에 찾기 쉬워진다.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="sn">2</div>
+    <div class="sbody">
+      <h3>코드를 붙여넣는다</h3>
+      <p>가운데 편집기에 <span class="mono">function myFunction() { }</span> 이 들어 있다. <b>전부 지우고</b> 아래 코드를 통째로 붙여넣는다.</p>
+      <div class="codewrap">
+        <div class="codebar"><span>collector.gs</span><button id="cp">코드 복사</button></div>
+        <pre id="code">/**
+ * 두들김 조사 — 수집 창구 (Google Apps Script)
+ *
+ * 조사자에게 저장소 쓰기 토큰을 나눠 주는 것은 구조가 틀렸다. 토큰 하나로
+ * 저장소 전체를 지울 수 있고, 사람이 늘수록 회수도 관리도 안 된다.
+ * 담당자가 이 창구를 한 번 만들고, 조사자에게는 «주소 + 암구호» 만 준다.
+ * 구글 계정은 담당자 하나면 되고, 조사자는 아무 계정도 필요 없다.
+ *
+ * ── 만드는 법 (5분) ────────────────────────────────────────────
+ * 1. script.google.com → 새 프로젝트
+ * 2. 이 파일 내용을 통째로 붙여넣는다
+ * 3. 아래 SECRET 을 현장에서 쓸 값으로 바꾼다 (조사자에게 알려 줄 값)
+ * 4. FOLDER 를 결과를 담을 구글 드라이브 폴더 ID 로 바꾼다
+ *      드라이브에서 폴더를 열면 주소가
+ *      https://drive.google.com/drive/folders/&lt;여기가 ID&gt;
+ *    비워 두면 «두들김 조사» 폴더를 내 드라이브에 자동으로 만든다
+ * 5. 배포 → 새 배포 → 유형 «웹 앱»
+ *      실행 계정 : 나
+ *      액세스 권한: 모든 사용자          ← 조사자가 로그인하지 않아도 되게
+ *    배포를 누르면 권한 승인을 한 번 요구한다. 승인한다
+ * 6. 나오는 /exec 주소를 조사자에게 준다. 앱의 «수집 주소» 칸에 넣는다
+ *
+ * ── 알아 둘 것 ─────────────────────────────────────────────────
+ * · 주소를 아는 사람은 누구나 올릴 수 있다. 암구호는 장난 업로드를 막는
+ *   최소한의 문턱이지 강한 인증이 아니다. 올라온 것을 담당자가 확인한다
+ * · 이 창구는 «쓰기만» 한다. 읽기도 삭제도 안 된다. 주소가 새어도 남의
+ *   조사 자료를 가져갈 수는 없다
+ * · 앱은 파일을 하나씩 나눠 보낸다. 현장 통신에서 8 MB 한 방은 잘 끊긴다
+ * · 코드를 고치면 «배포 → 배포 관리 → 편집 → 새 버전» 을 해야 반영된다
+ */
+
+var SECRET = &quot;여기를-현장-암구호로-바꾼다&quot;;
+var FOLDER = &quot;&quot;;   // 구글 드라이브 폴더 ID. 비우면 자동 생성
+
+function doPost(e) {
+  try {
+    if (!e || !e.postData || !e.postData.contents) return reply({ ok: false, error: &quot;빈 요청&quot; });
+
+    var q = JSON.parse(e.postData.contents);
+
+    if (SECRET &amp;&amp; String(q.key || &quot;&quot;) !== SECRET) return reply({ ok: false, error: &quot;암구호 불일치&quot; });
+    if (!q.survey || !q.name || !q.data) return reply({ ok: false, error: &quot;survey·name·data 가 필요하다&quot; });
+
+    /* 경로 조작을 막는다 — 폴더 이름과 파일 이름에서 구분자를 걷어낸다 */
+    var survey = String(q.survey).replace(/[\/\\:*?&quot;&lt;&gt;|]/g, &quot;_&quot;).slice(0, 120);
+    var name   = String(q.name).replace(/[\/\\:*?&quot;&lt;&gt;|]/g, &quot;_&quot;).slice(0, 160);
+
+    var root = FOLDER ? DriveApp.getFolderById(FOLDER) : rootFolder_();
+    var dir  = childFolder_(root, survey);
+
+    var blob = Utilities.newBlob(
+      Utilities.base64Decode(q.data),
+      q.type || &quot;application/octet-stream&quot;,
+      name
+    );
+
+    /* 같은 이름이 이미 있으면 덮어쓴다 — 통신이 끊겨 다시 보낸 경우다 */
+    var old = dir.getFilesByName(name);
+    while (old.hasNext()) old.next().setTrashed(true);
+
+    var f = dir.createFile(blob);
+
+    log_(dir, q, name, f.getSize());
+    return reply({ ok: true, id: f.getId(), bytes: f.getSize() });
+
+  } catch (err) {
+    return reply({ ok: false, error: String(err &amp;&amp; err.message || err) });
+  }
+}
+
+/* 브라우저로 주소를 열었을 때 — 살아 있는지만 알려 준다 */
+function doGet() {
+  return reply({ ok: true, service: &quot;두들김 조사 수집 창구&quot;, note: &quot;POST 로 보낸다&quot; });
+}
+
+function reply(o) {
+  return ContentService.createTextOutput(JSON.stringify(o))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function rootFolder_() {
+  var it = DriveApp.getFoldersByName(&quot;두들김 조사&quot;);
+  return it.hasNext() ? it.next() : DriveApp.createFolder(&quot;두들김 조사&quot;);
+}
+
+function childFolder_(parent, name) {
+  var it = parent.getFoldersByName(name);
+  return it.hasNext() ? it.next() : parent.createFolder(name);
+}
+
+/* 조사 폴더마다 누가 언제 무엇을 올렸는지 한 줄씩 남긴다 */
+function log_(dir, q, name, bytes) {
+  try {
+    var line = [
+      new Date().toISOString(),
+      q.inspector || &quot;&quot;,
+      q.bridge || &quot;&quot;,
+      name,
+      bytes
+    ].join(&quot;,&quot;) + &quot;\n&quot;;
+    var it = dir.getFilesByName(&quot;_수신기록.csv&quot;);
+    if (it.hasNext()) {
+      var f = it.next();
+      f.setContent(f.getBlob().getDataAsString(&quot;UTF-8&quot;) + line);
+    } else {
+      dir.createFile(&quot;_수신기록.csv&quot;,
+        &quot;﻿수신시각,점검원,교량명,파일,바이트\n&quot; + line, &quot;text/csv&quot;);
+    }
+  } catch (e) { /* 기록 실패가 업로드를 막지는 않는다 */ }
+}
+</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="sn">3</div>
+    <div class="sbody">
+      <h3>암구호를 정한다</h3>
+      <p>코드 위쪽의 이 줄을 찾아 바꾼다. 이 값이 <b>조사자에게 알려 줄 암구호</b>다.</p>
+      <div class="codewrap"><pre>var SECRET = "여기를-현장-암구호로-바꾼다";</pre></div>
+      <p>예: <span class="click">만경강교2026</span>. 어렵게 만들 필요는 없다 — 지나가는 사람의 장난 업로드를 막는 문턱이지 비밀번호가 아니다.</p>
+      <p>바로 아래 <span class="mono">var FOLDER = "";</span> 는 <b>비워 둔다.</b> 그러면 내 드라이브에 «두들김 조사» 폴더를 알아서 만든다. 특정 폴더에 넣고 싶으면 그 폴더를 드라이브에서 열었을 때 주소 끝에 붙는 ID 를 넣는다.</p>
+      <p>디스크 모양 <span class="click">저장</span> 아이콘을 누른다.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="sn">4</div>
+    <div class="sbody">
+      <h3>웹 앱으로 배포한다</h3>
+      <p>오른쪽 위 <span class="click">배포</span> <span class="sep">→</span> <span class="click">새 배포</span>. 왼쪽 톱니바퀴에서 <span class="click">웹 앱</span> 을 고르고, 아래 둘을 <b>반드시</b> 이렇게 맞춘다.</p>
+      <figure>
+        <div class="fbox">
+        <svg viewBox="0 0 620 232" role="img" aria-label="배포 설정 창 — 실행 계정은 나, 액세스 권한은 모든 사용자로 맞춘다">
+          <rect x="8" y="8" width="604" height="216" rx="9" fill="none" stroke="currentColor" stroke-opacity=".22"/>
+          <text x="26" y="36" font-family="IBM Plex Sans KR,sans-serif" font-size="14" font-weight="600" fill="currentColor">새 배포</text>
+          <line x1="8" y1="50" x2="612" y2="50" stroke="currentColor" stroke-opacity=".14"/>
+          <text x="26" y="76" font-family="IBM Plex Mono,monospace" font-size="11" fill="currentColor" fill-opacity=".6">설명</text>
+          <rect x="150" y="62" width="440" height="24" rx="5" fill="currentColor" fill-opacity=".05" stroke="currentColor" stroke-opacity=".16"/>
+          <text x="160" y="79" font-family="IBM Plex Sans KR,sans-serif" font-size="12" fill="currentColor" fill-opacity=".45">첫 배포 (비워도 된다)</text>
+
+          <rect x="18" y="98" width="584" height="42" rx="6" fill="var(--accent)" fill-opacity=".1"/>
+          <text x="26" y="124" font-family="IBM Plex Mono,monospace" font-size="11" fill="currentColor" fill-opacity=".6">실행 계정</text>
+          <rect x="150" y="106" width="440" height="26" rx="5" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="160" y="124" font-family="IBM Plex Sans KR,sans-serif" font-size="13" font-weight="600" fill="var(--accent)">나 (담당자 계정)</text>
+
+          <rect x="18" y="148" width="584" height="42" rx="6" fill="var(--accent)" fill-opacity=".1"/>
+          <text x="26" y="174" font-family="IBM Plex Mono,monospace" font-size="11" fill="currentColor" fill-opacity=".6">액세스 권한</text>
+          <rect x="150" y="156" width="440" height="26" rx="5" fill="var(--surface)" stroke="var(--accent)" stroke-width="1.5"/>
+          <text x="160" y="174" font-family="IBM Plex Sans KR,sans-serif" font-size="13" font-weight="600" fill="var(--accent)">모든 사용자</text>
+
+          <rect x="500" y="198" width="90" height="20" rx="10" fill="var(--accent)"/>
+          <text x="545" y="212" text-anchor="middle" font-family="IBM Plex Sans KR,sans-serif" font-size="12" font-weight="600" fill="var(--accent-ink)">배포</text>
+        </svg>
+        </div>
+        <figcaption>이 둘을 틀리면 조사자 쪽에서 로그인을 요구하거나 아예 실패한다</figcaption>
+      </figure>
+      <div class="note">
+        <span class="lab">왜 «모든 사용자» 인가</span>
+        구글 계정 없이도 올릴 수 있게 하려는 것이다. <b>실행은 담당자 계정으로</b> 되므로 파일은 담당자 드라이브에 쌓인다. 조사자가 담당자 드라이브를 들여다볼 수 있게 되는 것이 아니다.
+      </div>
+    </div>
+  </div>
+
+  <div class="step warn">
+    <div class="sn">5</div>
+    <div class="sbody">
+      <h3>«확인되지 않은 앱» 경고를 넘어간다</h3>
+      <p>배포를 누르면 권한 승인을 한 번 요구한다. 여기서 대부분 막힌다.</p>
+      <ul>
+        <li><span class="click">액세스 승인</span> <span class="sep">→</span> 계정 선택</li>
+        <li>«Google에서 확인하지 않은 앱입니다» 화면이 뜬다</li>
+        <li>왼쪽 아래 <span class="click">고급</span> <span class="sep">→</span> <span class="click">두들김 조사 수집(안전하지 않음)으로 이동</span></li>
+        <li><span class="click">허용</span></li>
+      </ul>
+      <div class="note bad">
+        <span class="lab">놀라지 말 것</span>
+        내가 방금 쓴 스크립트라 구글의 심사를 받지 않았다는 뜻이지, 위험하다는 뜻이 아니다. 요구하는 권한은 <b>내 드라이브에 파일을 만드는 것</b> 하나다.
+      </div>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="sn">6</div>
+    <div class="sbody">
+      <h3>주소를 받는다</h3>
+      <p>승인이 끝나면 <b>웹 앱 URL</b> 이 나온다. <span class="mono">/exec</span> 로 끝난다.</p>
+      <div class="codewrap"><pre>https://script.google.com/macros/s/AKfycb…아주긴글자…/exec</pre></div>
+      <p>이 주소를 복사해 둔다. 창을 닫아 잃어버려도 <span class="click">배포</span> <span class="sep">→</span> <span class="click">배포 관리</span> 에서 다시 볼 수 있다.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="sn">7</div>
+    <div class="sbody">
+      <h3>살아 있는지 확인한다</h3>
+      <p>그 주소를 브라우저 주소창에 그대로 붙여넣고 연다. 이렇게 나오면 정상이다.</p>
+      <div class="codewrap"><pre>{"ok":true,"service":"두들김 조사 수집 창구","note":"POST 로 보낸다"}</pre></div>
+      <p>«스크립트를 실행할 권한이 없습니다» 가 나오면 5단계의 액세스 권한이 «모든 사용자» 가 아닌 것이다.</p>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="sn">8</div>
+    <div class="sbody">
+      <h3>앱에서 한 번 보내 본다</h3>
+      <p>휴대폰에서 <a href="https://cnusal-1.github.io/tap-survey/" target="_blank" rel="noopener">앱</a> 을 열고 아무 사진이나 찍어 타점 하나만 기록한 뒤, 저장 화면의 <b>수집 서버로 보내기</b> 에 주소와 암구호를 넣고 보낸다.</p>
+      <p>내 드라이브의 «두들김 조사» 폴더에 조사 이름으로 폴더가 생기고 파일이 들어와 있으면 끝이다. <span class="click">주소 기억</span> 을 눌러 두면 다음부터 안 넣어도 된다.</p>
+    </div>
+  </div>
+
+</div>
+
+<h2 class="part">조사자에게 줄 것</h2>
+<div class="hand">
+  <h3>이 셋이면 된다. 계정도 토큰도 필요 없다.</h3>
+  <dl>
+    <dt>앱 주소</dt><dd>https://cnusal-1.github.io/tap-survey/</dd>
+    <dt>수집 주소</dt><dd>6단계에서 받은 <span class="mono">/exec</span> 주소</dd>
+    <dt>암구호</dt><dd>3단계에서 정한 값</dd>
+  </dl>
+</div>
+<p style="color:var(--ink-2);font-size:15px">앱을 홈 화면에 추가해 두라고 함께 일러 준다 — <b>아이폰</b> Safari 공유 <span class="mono">↑</span> <span class="sep">→</span> 홈 화면에 추가, <b>안드로이드</b> Chrome <span class="mono">⋮</span> <span class="sep">→</span> 홈 화면에 추가. 주소창 없는 전체화면으로 열려 현장에서 훨씬 낫다.</p>
+
+<h2 class="part">막혔을 때</h2>
+<div class="tw"><table>
+  <thead><tr><th>증상</th><th>원인과 조치</th></tr></thead>
+  <tbody>
+    <tr><td><b>암구호 불일치</b></td><td>3단계의 <span class="mono">SECRET</span> 과 앱에 넣은 값이 다르다. 앞뒤 공백도 다르게 친다</td></tr>
+    <tr><td><b>연결하지 못했다</b></td><td>통신이 안 되는 곳이다. <b>기록은 기기에 남아 있다</b> — 통신되는 곳에서 앱을 열어 «조사 종료 및 저장» 으로 돌아가 다시 누르면 된다</td></tr>
+    <tr><td><b>권한이 없습니다</b></td><td>액세스 권한이 «모든 사용자» 가 아니다. 배포 관리에서 고친다</td></tr>
+    <tr><td><b>코드를 고쳤는데 그대로다</b></td><td>저장만으로는 반영되지 않는다. <span class="click">배포</span> <span class="sep">→</span> <span class="click">배포 관리</span> <span class="sep">→</span> 연필 <span class="sep">→</span> 버전 <b>새 버전</b> <span class="sep">→</span> 배포. 주소는 그대로 유지된다</td></tr>
+    <tr><td><b>파일이 반만 왔다</b></td><td>중간에 끊긴 것이다. 다시 보내면 같은 이름을 덮어쓰므로 중복이 생기지 않는다</td></tr>
+    <tr><td><b>드라이브가 꽉 찼다</b></td><td>조사 한 건이 10 MB 안팎이다. 무료 15 GB 면 1,000건 정도. 넘으면 오래된 조사를 다른 곳으로 옮긴다</td></tr>
+  </tbody>
+</table></div>
+
+<h2 class="part">알아 둘 것</h2>
+<div class="tw"><table>
+  <tbody>
+    <tr><td style="width:32%"><b>암구호는 강한 인증이 아니다</b></td><td>주소를 아는 사람은 누구나 올릴 수 있다. 장난 업로드를 막는 최소한의 문턱으로 보고, 올라온 것을 담당자가 확인한다. 조사 폴더마다 <span class="mono">_수신기록.csv</span> 에 누가 언제 무엇을 올렸는지 남는다</td></tr>
+    <tr><td><b>창구는 쓰기만 한다</b></td><td>읽기도 삭제도 코드에 없다. 주소가 새어도 남의 조사 자료를 가져갈 수 없다</td></tr>
+    <tr><td><b>암구호를 바꾸려면</b></td><td><span class="mono">SECRET</span> 을 고치고 <b>새 버전으로 다시 배포</b>한다. 주소는 그대로이므로 조사자에게 암구호만 다시 알려 주면 된다</td></tr>
+    <tr><td><b>창구를 닫으려면</b></td><td>배포 관리에서 <b>보관처리</b>. 그때부터 아무도 올릴 수 없다. 이미 들어온 파일은 드라이브에 그대로 남는다</td></tr>
+  </tbody>
+</table></div>
+
+<footer>수집 창구 코드 원본 · <a href="https://github.com/cnusal-1/tap-survey/blob/main/collector.gs" target="_blank" rel="noopener">github.com/cnusal-1/tap-survey</a> 의 <span class="mono">collector.gs</span></footer>
+</div>
+
+<script>
+document.getElementById('cp').addEventListener('click', async function(){
+  var b=this, t=document.getElementById('code').textContent;
+  try{ await navigator.clipboard.writeText(t); b.textContent='복사됨'; }
+  catch(e){
+    var r=document.createRange(); r.selectNodeContents(document.getElementById('code'));
+    var s=getSelection(); s.removeAllRanges(); s.addRange(r);
+    b.textContent='직접 복사하라 (⌘C)';
+  }
+  setTimeout(function(){ b.textContent='코드 복사'; }, 2200);
+});
+</script>

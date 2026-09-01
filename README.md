@@ -57,7 +57,8 @@
 **조사자에게 저장소 쓰기 토큰을 나눠 주지 마라.** 토큰 하나로 저장소 전체를 지울 수
 있고, 사람이 늘수록 회수도 관리도 안 된다.
 
-담당자가 `collector.gs` 로 **수집 창구**를 한 번 만든다 (Google Apps Script, 5분).
+담당자가 `collector.gs` 로 **수집 창구**를 한 번 만든다 (Google Apps Script, 10분).
+**→ 단계별 안내: https://cnusal-1.github.io/tap-survey/collector-guide.html**
 조사자에게는 **주소와 암구호만** 준다. 구글 계정은 담당자 하나면 되고 조사자는 아무
 계정도 필요 없다. 창구는 쓰기만 하므로 주소가 새어도 남의 자료를 가져갈 수 없다.
 조사 폴더마다 `_수신기록.csv` 에 누가 언제 무엇을 올렸는지 남는다.
@@ -86,6 +87,7 @@ no,tap_id,시각,x_mm,y_mm,x_rel,y_rel,sigma_mm,부위구분,비고,
 | `index.html` | 앱 본체. 외부 자원은 웹폰트뿐 |
 | `sw.js` | 서비스 워커. 오프라인 캐시 |
 | `collector.gs` | 수집 창구. 담당자가 한 번 만든다 |
+| `collector-guide.html` | 수집 창구 만드는 법 — 단계별 안내 |
 
 둘이 같은 폴더에 있어야 오프라인 캐시가 걸린다.
 
