@@ -16,8 +16,11 @@
  *
  * 1. script.google.com → 새 프로젝트
  * 2. 이 파일 내용을 통째로 붙여넣는다
- * 3. FOLDER 를 결과를 담을 구글 드라이브 폴더 ID 로 바꾼다.
- *    비워 두면 «두들김 조사» 폴더를 내 드라이브에 자동으로 만든다
+ * 3. FOLDER 는 그냥 비워 두면 된다. «두들김 조사» 폴더를 내 드라이브에
+ *    자동으로 만든다. 특정 폴더에 넣고 싶으면 그 폴더를 드라이브에서 열었을 때의
+ *    주소를 통째로 붙여넣어도 되고 ID 만 넣어도 된다 —
+ *      https://drive.google.com/drive/folders/1AbC…33자…XyZ
+ *    ID 는 보통 33자다. 짧게 잘라 넣으면 «잘못된 폴더 ID» 가 난다
  * 4. 배포 → 새 배포 → 유형 «웹 앱»
  *      실행 계정 : 나
  *      액세스 권한: 모든 사용자          ← 조사자가 로그인하지 않아도 되게
@@ -31,7 +34,7 @@
  * · 코드를 고치면 «배포 → 배포 관리 → 편집 → 새 버전» 을 해야 반영된다
  */
 
-var FOLDER    = "";      // 구글 드라이브 폴더 ID. 비우면 자동 생성
+var FOLDER    = "";      // 비우면 자동 생성. 폴더 주소를 통째로 넣어도 된다
 var OPEN      = true;    // false 로 두면 창구를 닫는다
 var MAXBYTES  = 20 * 1024 * 1024;   // 파일 하나 상한
 var DAILYCAP  = 600;                // 하루에 받을 파일 수 상한
@@ -67,8 +70,8 @@ function doPost(e) {
     var used = bump_();
     if (used > DAILYCAP) return reply({ ok: false, error: "오늘 받을 수 있는 양을 넘었다. 내일 다시 보내라" });
 
-    var root = FOLDER ? DriveApp.getFolderById(FOLDER) : rootFolder_();
-    var dir  = childFolder_(root, survey);
+    var picked = resolveFolder_();
+    var dir = childFolder_(picked.folder, survey);
 
     var blob = Utilities.newBlob(bytes, q.type || "application/octet-stream", name);
 
@@ -79,7 +82,8 @@ function doPost(e) {
     var f = dir.createFile(blob);
 
     log_(dir, q, name, f.getSize());
-    return reply({ ok: true, id: f.getId(), bytes: f.getSize(), todayUsed: used, dailyCap: DAILYCAP });
+    return reply({ ok: true, id: f.getId(), bytes: f.getSize(),
+                   todayUsed: used, dailyCap: DAILYCAP, warn: picked.warn || undefined });
 
   } catch (err) {
     return reply({ ok: false, error: String(err && err.message || err) });
@@ -90,7 +94,9 @@ function doPost(e) {
 function doGet() {
   return reply({
     ok: true, service: "두들김 조사 수집 창구",
-    open: OPEN, todayUsed: peek_(), dailyCap: DAILYCAP, note: "POST 로 보낸다"
+    open: OPEN, todayUsed: peek_(), dailyCap: DAILYCAP,
+    folder: (function () { try { return resolveFolder_().folder.getName(); } catch (e) { return "?"; } })(),
+    note: "POST 로 보낸다"
   });
 }
 
@@ -122,7 +128,22 @@ function peek_() {
   return parseInt(PropertiesService.getScriptProperties().getProperty(dayKey_()) || "0", 10);
 }
 
-/* ---------- 폴더 ---------- */
+/* ---------- 폴더 ----------
+   FOLDER 에 주소를 통째로 붙여넣어도 되게 ID 를 뽑아낸다. ID 가 잘못돼 있으면
+   업로드를 실패시키지 않고 기본 폴더로 받되, 그 사실을 응답에 담는다 —
+   현장에서 자료를 잃는 것이 잘못된 폴더에 들어가는 것보다 나쁘다. */
+function resolveFolder_() {
+  var raw = String(FOLDER || "").trim();
+  if (!raw) return { folder: rootFolder_() };
+  var m = raw.match(/[-\w]{25,}/);
+  if (!m) return { folder: rootFolder_(), warn: "FOLDER 값이 폴더 ID 로 보이지 않는다 (\"" + raw + "\"). 기본 폴더에 받았다" };
+  try {
+    return { folder: DriveApp.getFolderById(m[0]) };
+  } catch (e) {
+    return { folder: rootFolder_(), warn: "FOLDER ID 로 폴더를 열지 못했다. 기본 폴더에 받았다" };
+  }
+}
+
 function rootFolder_() {
   var it = DriveApp.getFoldersByName("두들김 조사");
   return it.hasNext() ? it.next() : DriveApp.createFolder("두들김 조사");

@@ -29,6 +29,7 @@ body{margin:0;background:var(--ground);color:var(--ink);
  font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
  font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all}
 .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
+a{color:var(--accent);text-underline-offset:2px}
 .wrap{max-width:580px;margin:0 auto;padding:0 16px 110px}
 header{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid var(--line);padding:12px 0 10px}
 .htop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
@@ -191,7 +192,9 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
     <div id="lockNote"></div>
     <div id="m1"></div>
 
-    <label style="margin-top:18px">점검 망치 사진 (선택)</label>
+    <div style="margin-top:20px"><a href="#" id="hamToggle" style="font-size:13px">점검 망치 정보 넣기 (선택)</a></div>
+    <div id="hamBox" class="hide">
+    <label style="margin-top:12px">망치 사진</label>
     <div class="btnrow" style="margin-top:0">
       <button class="ghost" id="camHam">사진 촬영</button>
       <button class="ghost" id="pickHam">파일 선택</button>
@@ -212,6 +215,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
     <div class="row" style="margin-top:6px">
       <div><label>망치 질량 (g)</label><input id="f_hmass" type="number" inputmode="numeric" placeholder="450"></div>
       <div><label>망치 비고</label><input id="f_hnote" placeholder="머리 지름 25 mm"></div>
+    </div>
     </div>
 
     <div class="btnrow"><button class="ghost" id="back1">뒤로</button><button class="primary" id="go2">다음 · 조사 시작</button></div>
@@ -271,24 +275,18 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
     <h2>조사 종료 및 저장</h2>
     <div id="saveGate"></div>
     <div id="saveBody" class="hide">
-      <label>파일명</label>
-      <div class="fname" id="fnCsv">—</div>
-      <div class="fname" id="fnFace">—</div>
-      <div class="fname" id="fnHam">—</div>
+      <div class="fname" id="fnAll">—</div>
       <div class="btnrow">
-        <button class="primary" id="dlCsv">CSV 저장</button>
-        <button class="ghost" id="dlFace">사진·음향 저장</button>
-        <button class="ghost" id="cpCsv">CSV 복사</button>
-      </div>
-      <div id="dlNote"></div>
-
-      <label style="margin-top:24px">담당자에게 보내기</label>
-      <p class="hint" id="cxWhere" style="margin:0 0 10px">—</p>
-      <div class="btnrow" style="margin-top:0">
+        <button class="ghost" id="dlAll">내 기기에 저장</button>
         <button class="primary" id="cxPush">데이터 보내기</button>
       </div>
+      <div id="dlNote"></div>
       <div id="cxNote"></div>
-      <div style="margin-top:8px"><a href="#" id="cxToggle" style="font-size:13px">보낼 곳 바꾸기</a></div>
+      <p class="hint" id="cxWhere" style="margin:10px 0 0">—</p>
+      <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap">
+        <a href="#" id="cxToggle" style="font-size:12.5px">보낼 곳 바꾸기</a>
+        <a href="#" id="pvToggle" style="font-size:12.5px">기록 내용 보기</a>
+      </div>
       <div id="cxAdv" class="hide">
         <label>수집 주소</label>
         <input id="cx_url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
@@ -297,27 +295,10 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
         <div class="btnrow"><button class="ghost" id="cxSave">이 주소로 기억</button>
           <button class="ghost" id="cxReset">기본값으로</button></div>
       </div>
-
-      <label style="margin-top:26px">깃허브에 직접 올리기 <span class="pill neu">담당자용</span></label>
-      <p class="hint" style="margin:0 0 10px">저장소 쓰기 토큰이 필요하다. <strong>조사자에게 나눠 주지 마라</strong> — 토큰 하나로 저장소 전체를 지울 수 있다. 여러 사람이 조사한다면 위의 수집 서버를 쓴다.</p>
-      <div class="gh">
-        <div><label>소유자 / 저장소</label><input id="gh_repo" placeholder="cnusal/tap-survey"></div>
-        <div><label>브랜치</label><input id="gh_branch" placeholder="main"></div>
+      <div id="pvBox" class="hide">
+        <div class="btnrow" style="margin-top:10px"><button class="ghost" id="cpCsv">CSV 복사</button></div>
+        <pre id="csvOut"></pre>
       </div>
-      <label>저장 경로</label>
-      <input id="gh_path" placeholder="surveys">
-      <label>액세스 토큰</label>
-      <input id="gh_tok" type="password" placeholder="github_pat_…" autocomplete="off">
-      <div class="note cau" style="margin-top:10px">토큰은 <strong>이 브라우저에만</strong> 저장되고 서버로 가지 않는다. 저장소 하나에만 <span class="mono">Contents: Read and write</span> 권한을 준 <strong>세분화 토큰(fine-grained)</strong>을 쓰라. 공용 기기에서는 다 쓴 뒤 «토큰 지우기»를 눌러라.</div>
-      <div class="btnrow">
-        <button class="primary" id="ghPush">깃허브에 올리기</button>
-        <button class="ghost" id="ghSave">설정 기억</button>
-        <button class="ghost danger" id="ghClear">토큰 지우기</button>
-      </div>
-      <div id="ghNote"></div>
-
-      <label style="margin-top:20px">CSV 미리보기</label>
-      <pre id="csvOut"></pre>
     </div>
     <div class="btnrow"><button class="ghost" id="back3">뒤로</button><button class="ghost" id="btnNew">새 조사</button></div>
   </div>
@@ -503,6 +484,7 @@ function drawCam(){
  g.fillStyle="#57BCA8";g.font="600 12px monospace";g.textAlign="center";
  g.fillText(arLabel()+" 박스",x0+w/2,y0+16);
  requestAnimationFrame(drawCam);}
+$("hamToggle").onclick=e=>{e.preventDefault();$("hamBox").classList.toggle("hide");};
 $("camFace").onclick=openCam;
 $("camClose").onclick=closeCam;
 $("camShot").onclick=()=>{
@@ -814,7 +796,7 @@ function buildCsv(base){
   ["조사면 가로(mm)",$("f_w").value],["조사면 세로(mm)",$("f_h").value],
   ["좌표 오차 sigma(mm)",S.frame?S.frame.sigmaMm().toFixed(1):""],
   ["사진 축척(mm/px)",S.frame?S.frame.mmPerPx().toFixed(3):""],
-  ["조사면 사진",base+".jpg"],["조사면 사진 원본명",S.face?S.face.name:""],
+  ["조사면 사진",base+".jpg"],["타점 표시 사진",base+"-표시.jpg"],["조사면 사진 원본명",S.face?S.face.name:""],
   ["조사면 사진 크기(px)",S.face?S.face.w+"x"+S.face.h:""],
   ["촬영 방식",S.face?(S.face.camera?"앱 내 카메라":"파일 선택/기기 카메라"):""],
   ["박스 비율",arLabel()+(BOX.locked?" (고정)":" (모서리 수동)")],
@@ -854,11 +836,13 @@ $("go3").onclick=()=>{
  BASE=baseName();CSV=buildCsv(BASE);
  const nAud=S.rows.filter(r=>r.audio).length;
  $("saveGate").innerHTML='<div class="note"><b>준비됨</b> · 부위 '+S.rows.length+'개 · 음향 '+nAud+'개 · 좌표 오차 σ '+S.frame.sigmaMm().toFixed(0)+' mm</div>';
- $("fnCsv").textContent=BASE+".csv";
- $("fnFace").textContent=BASE+".jpg   ← 조사면 사진";
- $("fnHam").textContent=S.ham?(BASE+"-hammer.jpg   ← 망치 사진"):"망치 사진 없음";
- $("dlFace").textContent=nAud?("사진·음향 저장 ("+(1+(S.ham?1:0)+nAud)+"개)"):"사진 저장";
+ const n=1+(S.face?2:0)+(S.ham?1:0)+nAud;
+ $("fnAll").innerHTML="파일 "+n+"개 · <b>"+BASE+"</b><br>"+
+  '<span style="color:var(--muted)">.csv'+(S.face?" · .jpg · <b>-표시.jpg</b>":"")+
+  (S.ham?" · -hammer.jpg":"")+
+  (nAud?" · -T001.wav 외 "+(nAud-1)+"개":"")+"</span>";
  $("csvOut").textContent=CSV.length>4000?CSV.slice(0,4000)+"\n… ("+CSV.length+"자)":CSV;
+ cxSync();
  $("saveBody").classList.remove("hide");setStep(3);};
 /* 저장 — 뷰어가 파일 저장 기능을 주면 그것을 쓰고, 아니면 보통의 다운로드 링크로 떨어진다.
    뷰어의 허용 확장자에 wav 가 없어 음향은 배포본에서만 받아진다. */
@@ -876,21 +860,71 @@ async function saveOne(data,name){
   return DL?"이 미리보기에서는 받아지지 않는다":"내려받기 시도";}catch(e){return "막힘";}}
 function dlLog(lines){$("dlNote").innerHTML='<div class="note info"><b>저장 결과</b><br>'+
  lines.join("<br>")+'</div>';}
-$("dlCsv").onclick=async()=>{$("dlCsv").disabled=true;
- const r=await saveOne(new Blob(["\uFEFF"+CSV],{type:"text/csv"}),BASE+".csv");
- dlLog([BASE+".csv — "+r]); $("dlCsv").disabled=false;};
-$("dlFace").onclick=async()=>{$("dlFace").disabled=true;const log=[];
+/* 내 기기에 저장 — CSV·사진·음향을 한 번에 */
+$("dlAll").onclick=async()=>{
+ $("dlAll").disabled=true;const log=[];
  const push=async(d,n)=>{log.push(n+" — "+await saveOne(d,n));dlLog(log);};
+ await push(new Blob(["\uFEFF"+CSV],{type:"text/csv"}),BASE+".csv");
  if(S.face)await push(S.face.file,BASE+".jpg");
+ const mk=await renderMarked(); if(mk)await push(mk,BASE+"-표시.jpg");
  if(S.ham)await push(S.ham.file,BASE+"-hammer.jpg");
  const auds=S.rows.filter(r=>r.audio);
  for(const r of auds){const w=TapAudio.encodeWav(r.audio.seg,r.audio.fs);
   await push(w.blob,BASE+"-"+r.tapId+".wav");}
- if(auds.length&&DL)log.push("<b>뷰어가 wav 저장을 허용하지 않는다.</b> 음향은 배포본에서 받는다.");
- dlLog(log); $("dlFace").disabled=false;};
-$("cpCsv").onclick=async()=>{try{await navigator.clipboard.writeText(CSV);
- $("cpCsv").textContent="복사됨";setTimeout(()=>$("cpCsv").textContent="CSV 복사",1500);}
- catch(e){alert("복사 권한이 없다. 아래 미리보기를 직접 선택해 복사하라");}};
+ if(auds.length&&DL)log.push("<b>이 화면에서는 음향을 못 받는다.</b> 휴대폰의 실제 주소에서 받으라.");
+ dlLog(log);$("dlAll").disabled=false;};
+
+
+/* ================= 타점 표시 사진 =================
+   원본 사진은 손대지 않는다. 조사면 사진에 박스·치수·타점 번호를 그린
+   «-표시.jpg» 를 따로 만든다. 보고서에 그대로 들어가는 그림이다. */
+const FEATCOL={"보수부위":"#41566B","열화부위":"#A2451A","건전부":"#1B7A4B","기타":"#5E6A67"};
+function renderMarked(){
+ return new Promise(res=>{
+  if(!S.face||!S.frame){res(null);return;}
+  const W=S.face.w,H=S.face.h,PAD=Math.round(H*0.075);
+  const c=document.createElement("canvas");c.width=W;c.height=H+PAD;
+  const g=c.getContext("2d");
+  g.fillStyle="#ffffff";g.fillRect(0,0,W,H+PAD);
+  g.drawImage(S.face.img,0,0,W,H);
+  const k=W/1600;                       /* 1600 px 사진을 기준으로 굵기를 잡는다 */
+  const P=S.box;
+  /* 조사 범위 */
+  g.strokeStyle="#00C2A8";g.lineWidth=3*k;g.beginPath();
+  P.forEach((p,i)=>i?g.lineTo(p.x,p.y):g.moveTo(p.x,p.y));g.closePath();g.stroke();
+  /* 치수 */
+  const wv=$("f_w").value,hv=$("f_h").value;
+  g.font="600 "+Math.round(26*k)+"px monospace";g.textAlign="center";g.textBaseline="middle";
+  const tag=(x,y,t)=>{const w=g.measureText(t).width+16*k,h=34*k;
+   g.fillStyle="rgba(255,255,255,.92)";g.fillRect(x-w/2,y-h/2,w,h);
+   g.strokeStyle="#A2451A";g.lineWidth=1.5*k;g.strokeRect(x-w/2,y-h/2,w,h);
+   g.fillStyle="#A2451A";g.fillText(t,x,y);};
+  tag((P[0].x+P[1].x)/2,(P[0].y+P[1].y)/2-30*k,wv+" mm");
+  tag((P[3].x+P[0].x)/2+52*k,(P[3].y+P[0].y)/2,hv+" mm");
+  /* 타점 */
+  const R=Math.max(16,22*k);
+  S.rows.forEach(r=>{
+   g.beginPath();g.arc(r.px,r.py,R,0,7);
+   g.fillStyle=FEATCOL[r.feat]||FEATCOL["기타"];g.fill();
+   g.strokeStyle="#fff";g.lineWidth=3*k;g.stroke();
+   g.fillStyle="#fff";g.font="700 "+Math.round(R*1.05)+"px monospace";
+   g.fillText(String(r.no),r.px,r.py+1);});
+  /* 아래 띠 — 조사 이름과 범례 */
+  g.fillStyle="#F2F2EF";g.fillRect(0,H,W,PAD);
+  g.strokeStyle="#CCC";g.lineWidth=2*k;g.beginPath();g.moveTo(0,H);g.lineTo(W,H);g.stroke();
+  g.textAlign="left";g.textBaseline="middle";
+  g.fillStyle="#15191A";g.font="600 "+Math.round(30*k)+"px sans-serif";
+  g.fillText(BASE,26*k,H+PAD*0.32);
+  g.font=Math.round(25*k)+"px sans-serif";g.fillStyle="#555";
+  g.fillText("조사면 "+wv+" × "+hv+" mm  ·  타점 "+S.rows.length+"개  ·  좌표오차 σ "+
+             S.frame.sigmaMm().toFixed(0)+" mm",26*k,H+PAD*0.68);
+  let x=W*0.52;
+  ["보수부위","열화부위","건전부","기타"].forEach(f=>{
+   if(!S.rows.some(r=>r.feat===f))return;
+   g.beginPath();g.arc(x,H+PAD*0.5,14*k,0,7);g.fillStyle=FEATCOL[f];g.fill();
+   g.fillStyle="#15191A";g.font=Math.round(25*k)+"px sans-serif";
+   g.fillText(f,x+22*k,H+PAD*0.5);x+=g.measureText(f).width+62*k;});
+  c.toBlob(b=>res(b),"image/jpeg",0.9);});}
 
 /* ================= 자동 저장 · 이어하기 =================
    현장에서 30타를 치는 도중 전화가 오거나 실수로 새로고침하면 지금까지의
@@ -1029,10 +1063,11 @@ function cxSync(){
  $("cxPush").disabled=!has;
  $("cxWhere").innerHTML=has
   ?(c.custom?'직접 지정한 곳으로 보낸다 — <span class="mono">'+c.url.replace(/^https:\/\//,"").slice(0,46)+'…</span>'
-            :'보낼 곳 — <b>'+COLLECT_NAME+'</b>. 누르기만 하면 된다. 암구호도 계정도 필요 없다.')
+            :'보낼 곳 — <b>'+COLLECT_NAME+'</b>')
   :'<b>보낼 곳이 정해져 있지 않다.</b> 아래 «보낼 곳 바꾸기» 에서 담당자에게 받은 수집 주소를 넣어라.';
  if(!has)$("cxAdv").classList.remove("hide");}
 $("cxToggle").onclick=e=>{e.preventDefault();$("cxAdv").classList.toggle("hide");};
+$("pvToggle").onclick=e=>{e.preventDefault();$("pvBox").classList.toggle("hide");};
 $("cxReset").onclick=()=>{try{localStorage.removeItem(CXK);}catch(e){}
  cxSync();cxNote("기본 창구로 되돌렸다.","");};
 cxSync();
@@ -1047,11 +1082,13 @@ $("cxPush").onclick=async()=>{
   $("cxAdv").classList.remove("hide");return;}
  const jobs=[[BASE+".csv","text/csv",new Blob(["\uFEFF"+CSV],{type:"text/csv"})]];
  if(S.face)jobs.push([BASE+".jpg","image/jpeg",S.face.file]);
+ const marked=await renderMarked();
+ if(marked)jobs.push([BASE+"-표시.jpg","image/jpeg",marked]);
  if(S.ham)jobs.push([BASE+"-hammer.jpg","image/jpeg",S.ham.file]);
  S.rows.filter(r=>r.audio).forEach(r=>jobs.push([BASE+"-"+r.tapId+".wav","audio/wav",
    TapAudio.encodeWav(r.audio.seg,r.audio.fs).blob]));
  $("cxPush").disabled=true;
- const log=[];let done=0;
+ const log=[];let done=0,warned=null;
  const show=()=>cxNote("<b>보내는 중 "+done+"/"+jobs.length+"</b><br>"+log.join("<br>"),"info");
  show();
  for(const [name,type,data] of jobs){
@@ -1063,6 +1100,7 @@ $("cxPush").onclick=async()=>{
    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body});
    let out=null;try{out=await r.json();}catch(e){}
    if(!r.ok||(out&&out.ok===false))throw new Error((out&&out.error)||("HTTP "+r.status));
+   if(out&&out.warn&&!warned){warned=out.warn;}
    done++;log.push("✓ "+name);
   }catch(e){
    const m=String(e.message||e);
@@ -1075,74 +1113,9 @@ $("cxPush").onclick=async()=>{
    show();$("cxPush").disabled=false;return;}
   show();}
  cxNote("<b>모두 보냈다 — "+done+"개.</b><br>"+log.join("<br>")+
-  "<br>담당자 저장소에 «"+BASE+"» 폴더로 들어갔다.","");
+  "<br>담당자 쪽에 «"+BASE+"» 폴더로 들어갔다."+
+  (warned?'<br><b style="color:var(--rust)">창구 알림 — '+warned+'</b>':""),"");
  $("cxPush").disabled=false;};
-
-/* ================= 깃허브 업로드 =================
-   사용자의 저장소에 사용자의 토큰으로 올린다. 토큰은 이 브라우저의
-   localStorage 에만 있고 어디로도 전송되지 않는다 — 깃허브 API 외에는.
-   아티팩트 미리보기에서는 외부 요청이 막혀 있어 배포본에서만 동작한다. */
-const GHK="tapsurvey.gh";
-(function(){try{const c=JSON.parse(localStorage.getItem(GHK)||"{}");
- if(c.repo)$("gh_repo").value=c.repo; $("gh_branch").value=c.branch||"main";
- $("gh_path").value=c.path||"surveys"; if(c.tok)$("gh_tok").value=c.tok;}catch(e){}})();
-$("ghSave").onclick=()=>{
- try{localStorage.setItem(GHK,JSON.stringify({repo:$("gh_repo").value.trim(),
-  branch:$("gh_branch").value.trim()||"main",path:$("gh_path").value.trim(),
-  tok:$("gh_tok").value}));
-  ghNote("설정을 이 브라우저에 기억했다.","");}catch(e){ghNote("이 브라우저가 저장을 막고 있다.","warn");}};
-$("ghClear").onclick=()=>{try{const c=JSON.parse(localStorage.getItem(GHK)||"{}");
- delete c.tok;localStorage.setItem(GHK,JSON.stringify(c));}catch(e){}
- $("gh_tok").value="";ghNote("토큰을 지웠다.","");};
-function ghNote(html,kind){$("ghNote").innerHTML='<div class="note '+(kind||"info")+'">'+html+'</div>';}
-const b64=d=>new Promise((res,rej)=>{const r=new FileReader();
- r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;
- r.readAsDataURL(d instanceof Blob?d:new Blob([d]));});
-async function ghPut(cfg,path,data,msg){
- const url="https://api.github.com/repos/"+cfg.repo+"/contents/"+path.split("/").map(encodeURIComponent).join("/");
- const head={Authorization:"Bearer "+cfg.tok,Accept:"application/vnd.github+json",
-             "X-GitHub-Api-Version":"2022-11-28"};
- const body={message:msg,content:await b64(data),branch:cfg.branch};
- let r=await fetch(url,{method:"PUT",headers:head,body:JSON.stringify(body)});
- if(r.status===422||r.status===409){ /* 같은 이름이 이미 있으면 sha 를 붙여 덮어쓴다 */
-  const g=await fetch(url+"?ref="+encodeURIComponent(cfg.branch),{headers:head});
-  if(g.ok){body.sha=(await g.json()).sha;
-   r=await fetch(url,{method:"PUT",headers:head,body:JSON.stringify(body)});}}
- if(!r.ok){let m="";try{m=(await r.json()).message||"";}catch(e){}
-  throw new Error(r.status+" "+(m||r.statusText));}
- return (await r.json()).content.html_url;}
-$("ghPush").onclick=async()=>{
- const cfg={repo:$("gh_repo").value.trim().replace(/^https?:\/\/github\.com\//,"").replace(/\.git$/,""),
-  branch:$("gh_branch").value.trim()||"main",
-  path:$("gh_path").value.trim().replace(/^\/+|\/+$/g,""),tok:$("gh_tok").value.trim()};
- if(!/^[^\/\s]+\/[^\/\s]+$/.test(cfg.repo)){ghNote("소유자/저장소 형식으로 넣어라 — 예 <span class=\"mono\">cnusal/tap-survey</span>","warn");return;}
- if(!cfg.tok){ghNote("액세스 토큰이 없다.","warn");return;}
- const dir=(cfg.path?cfg.path+"/":"")+BASE+"/";
- const jobs=[[BASE+".csv",new Blob(["\uFEFF"+CSV],{type:"text/csv"})]];
- if(S.face)jobs.push([BASE+".jpg",S.face.file]);
- if(S.ham)jobs.push([BASE+"-hammer.jpg",S.ham.file]);
- S.rows.filter(r=>r.audio).forEach(r=>jobs.push([BASE+"-"+r.tapId+".wav",
-   TapAudio.encodeWav(r.audio.seg,r.audio.fs).blob]));
- $("ghPush").disabled=true;
- const log=[];let done=0;
- const show=()=>ghNote("<b>올리는 중 "+done+"/"+jobs.length+"</b><br>"+log.join("<br>"),"info");
- let firstUrl=null;
- for(const [name,data] of jobs){
-  try{const u=await ghPut(cfg,dir+name,data,"두들김 조사 "+BASE);
-   firstUrl=firstUrl||u; done++; log.push("✓ "+name);}
-  catch(e){log.push("✗ "+name+" — "+e.message);
-   const m=String(e.message);
-   if(/^40[13]/.test(m))log.push("토큰 권한(Contents: Read and write)과 저장소 이름을 확인하라.");
-   else if(/^404/.test(m))log.push("저장소나 브랜치가 없다. 비공개 저장소면 토큰이 그 저장소에 접근 가능해야 한다.");
-   else if(/Failed to fetch|NetworkError|blocked/i.test(m))log.push("<b>이 환경이 외부 요청을 막고 있다.</b> 깃허브 페이지스에 올린 배포본에서 다시 시도하라.");
-   show();$("ghPush").disabled=false;return;}
-  show();}
- const tree="https://github.com/"+cfg.repo+"/tree/"+encodeURIComponent(cfg.branch)+"/"+
-  dir.replace(/\/$/,"").split("/").map(encodeURIComponent).join("/");
- ghNote("<b>모두 올렸다 — "+done+"개.</b><br>"+log.join("<br>")+
-  '<br><a href="'+tree+'" target="_blank" rel="noopener">'+dir+'</a> 에 들어갔다',"");
- $("ghPush").disabled=false;};
-
 /* ================= 이동 ================= */
 $("go1").onclick=()=>{
  const miss=[];["f_date","f_bridge","f_member","f_loc"].forEach((id,i)=>{
