@@ -119,6 +119,16 @@ pre{font-family:"IBM Plex Mono",monospace;font-size:10.5px;background:var(--surf
 .fileline{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);
  margin-top:8px;word-break:break-all}
 .fileline.has{color:var(--accent)}
+.card.dim{opacity:.55}
+/* 중요한 셋 — 촬영, 타점, 녹음 */
+.big{font-size:17.5px;font-weight:700;padding:18px 16px}
+.card h2{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 10px}
+.card h2 b{color:var(--ink);font-size:15.5px;font-weight:600}
+/* 곁가지 */
+.card.side{padding:13px 14px}
+.card.side label{margin:9px 0 3px;font-size:9.5px}
+.card.side input,.card.side select{padding:8px 10px;font-size:15px}
+.mini{font-size:13px;padding:9px 12px;font-weight:500}
 .hide{display:none}
 footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
 </style>
@@ -126,15 +136,58 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
 <div class="wrap">
 <header>
   <div class="htop"><h1>두들김 조사 기록</h1><span class="tag" id="tagOut">—</span></div>
-  <div class="steps"><div id="s0"></div><div id="s1"></div><div id="s2"></div><div id="s3"></div></div>
-  <div class="stepname" id="stepName">1 / 4 · 조사 정보</div>
 </header>
 
-<!-- 0. 조사 정보 -->
-<section id="step0">
+<section id="intro">
   <div class="card">
-    <h2>조사 정보</h2>
-    <p class="hint">파일명이 이 값으로 만들어진다. 날짜시간-교량명-교량부재-위치.</p>
+    <h2>이렇게 씁니다</h2>
+    <p class="hint">한 화면에서 다 끝납니다. 위에서 아래로 내려가며 채우면 됩니다.</p>
+    <figure style="margin:6px 0 0">
+      <svg viewBox="0 0 340 470" role="img" aria-label="조사 정보를 넣고, 사진을 찍고, 타점마다 3초씩 두들기고, 마지막에 저장하거나 보낸다">
+        <defs><marker id="fa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,1 L9,5 L0,9 z" fill="currentColor" fill-opacity=".45"/></marker></defs>
+        <g font-family="IBM Plex Sans KR,sans-serif">
+          <rect x="20" y="14" width="300" height="66" rx="10" fill="var(--surface-2)" stroke="var(--line)"/>
+          <circle cx="52" cy="47" r="17" fill="var(--accent)"/><text x="52" y="52" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-ink)">1</text>
+          <text x="80" y="42" font-size="15" font-weight="600" fill="currentColor">조사 정보</text>
+          <text x="80" y="63" font-size="12.5" fill="var(--muted)">날짜 · 교량 · 부재 · 위치</text>
+
+          <line x1="170" y1="80" x2="170" y2="104" stroke="currentColor" stroke-opacity=".45" stroke-width="1.5" marker-end="url(#fa)"/>
+
+          <rect x="20" y="110" width="300" height="66" rx="10" fill="var(--surface-2)" stroke="var(--line)"/>
+          <circle cx="52" cy="143" r="17" fill="var(--accent)"/><text x="52" y="148" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-ink)">2</text>
+          <text x="80" y="138" font-size="15" font-weight="600" fill="currentColor">사진 찍고 가로 길이</text>
+          <text x="80" y="159" font-size="12.5" fill="var(--muted)">테두리에 면을 채워 정면에서</text>
+
+          <line x1="170" y1="176" x2="170" y2="200" stroke="currentColor" stroke-opacity=".45" stroke-width="1.5" marker-end="url(#fa)"/>
+
+          <rect x="20" y="206" width="300" height="128" rx="10" fill="var(--accent-soft)" stroke="var(--accent)" stroke-width="1.5"/>
+          <circle cx="52" cy="239" r="17" fill="var(--accent)"/><text x="52" y="244" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-ink)">3</text>
+          <text x="80" y="234" font-size="15" font-weight="600" fill="currentColor">사진을 찍어 자리를 정하고</text>
+          <text x="80" y="255" font-size="15" font-weight="600" fill="currentColor">3초 두들긴다</text>
+          <text x="80" y="277" font-size="12.5" fill="var(--muted)">부위 구분을 고르고 시작을 누른다</text>
+          <text x="80" y="296" font-size="12.5" fill="var(--muted)">3초가 지나면 저절로 기록된다</text>
+          <path d="M40 316 h230" stroke="var(--accent)" stroke-opacity=".35" stroke-dasharray="3 3"/>
+          <text x="170" y="329" text-anchor="middle" font-size="12" font-weight="600" fill="var(--accent)">↻ 자리를 옮겨 가며 되풀이</text>
+
+          <line x1="170" y1="334" x2="170" y2="358" stroke="currentColor" stroke-opacity=".45" stroke-width="1.5" marker-end="url(#fa)"/>
+
+          <rect x="20" y="364" width="300" height="66" rx="10" fill="var(--surface-2)" stroke="var(--line)"/>
+          <circle cx="52" cy="397" r="17" fill="var(--accent)"/><text x="52" y="402" text-anchor="middle" font-size="16" font-weight="700" fill="var(--accent-ink)">4</text>
+          <text x="80" y="392" font-size="15" font-weight="600" fill="currentColor">저장하거나 보낸다</text>
+          <text x="80" y="413" font-size="12.5" fill="var(--muted)">내 기기에 저장 · 데이터 보내기</text>
+
+          <text x="170" y="455" text-anchor="middle" font-size="12" fill="var(--muted)">기록은 타점마다 자동 저장된다. 도중에 꺼져도 이어서 할 수 있다</text>
+        </g>
+      </svg>
+    </figure>
+    <div id="resumeBox"></div>
+    <button class="primary wide" id="goWork">조사 시작</button>
+  </div>
+</section>
+
+<section id="work" class="hide">
+  <div class="card side"><h2>1 · 조사 정보</h2>
+  <div class="card">
     <label class="req">조사 날짜</label>
     <div class="fw"><input id="f_date" type="date"><button class="clr" data-for="f_date">✕</button></div>
     <label class="req">교량명</label>
@@ -147,23 +200,19 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <div><label>점검원 (선택)</label><div class="fw"><input id="f_insp" placeholder="김우석"><button class="clr" data-for="f_insp">✕</button></div></div>
       <div><label>보수재 설계두께 (mm)</label><input id="f_th" type="number" inputmode="numeric" placeholder="30"></div>
     </div>
-    <p class="hint" style="margin:8px 0 0">설계두께는 깊이 역산의 전제다(계획서 명제 1). 모르면 비워도 되지만, 시공 기록에서 확인해 넣으면 그만큼 역산이 빨라진다. 배합·탄성계수는 현장에서 알 수 없으므로 받지 않는다 — 구역 이름으로 나중에 결합한다.</p>
+    <p class="hint" style="margin:6px 0 0">설계두께는 알면 넣고, 모르면 비워 둔다.</p>
     <div id="resumeBox"></div>
     <div id="m0"></div>
-    <button class="primary wide" id="go1">다음 · 사진 촬영</button>
   </div>
-</section>
-
-<!-- 1. 사진과 치수 -->
-<section id="step1" class="hide">
+  </div>
+  <div class="card" id="cardPhoto"><h2>2 · <b>사진 촬영</b>과 치수</h2>
   <div class="card">
-    <h2>조사면 사진과 치수</h2>
-    <p class="hint">카메라에 <b>4:3 사각 테두리</b>가 뜬다. 조사할 면을 그 안에 꽉 채워 정면에서 찍는다. 테두리가 곧 박스이고, 아래에서 넣는 실제 길이는 <b>그 박스의 길이</b>다. 비율이 고정이라 <b>가로만 넣으면 세로는 계산된다</b>.</p>
+    <p class="hint">테두리 안에 조사면을 꽉 채워 <b>정면</b>에서 찍는다. 가로 길이만 넣으면 세로는 계산된다.</p>
 
     <label class="req">조사면 사진</label>
     <div class="btnrow" style="margin-top:0">
-      <button class="primary" id="camFace">카메라 열기</button>
-      <button class="ghost" id="pickFace">파일 선택</button>
+      <button class="primary big" id="camFace">📷 사진 촬영</button>
+      <button class="ghost mini" id="pickFace">파일에서</button>
     </div>
     <div class="fileline" id="faceName">아직 없음</div>
     <input id="p_face" type="file" accept="image/*" capture="environment" hidden>
@@ -186,8 +235,8 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <div><label class="req" id="hLab">박스 세로 (자동)</label><input id="f_h" type="number" inputmode="numeric" placeholder="1800"></div>
     </div>
     <div class="btnrow" style="margin-top:8px">
-      <button class="ghost" id="unlockBox">비스듬히 찍었다 · 모서리 맞추기</button>
-      <button class="ghost hide" id="resetBox">4 : 3 박스로 되돌리기</button>
+      <button class="ghost mini" id="unlockBox">비스듬히 찍었다 · 모서리 맞추기</button>
+      <button class="ghost mini hide" id="resetBox">4 : 3 박스로 되돌리기</button>
     </div>
     <div id="lockNote"></div>
     <div id="m1"></div>
@@ -196,8 +245,8 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
     <div id="hamBox" class="hide">
     <label style="margin-top:12px">망치 사진</label>
     <div class="btnrow" style="margin-top:0">
-      <button class="ghost" id="camHam">사진 촬영</button>
-      <button class="ghost" id="pickHam">파일 선택</button>
+      <button class="ghost mini" id="camHam">촬영</button>
+      <button class="ghost mini" id="pickHam">파일에서</button>
     </div>
     <div class="fileline" id="hamName">아직 없음</div>
     <input id="p_ham" type="file" accept="image/*" capture="environment" hidden>
@@ -211,22 +260,18 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <option value="3번 · 볼핀">3번 · 볼핀 (ball-peen)</option>
       <option value="기타">기타 — 아래 질량·비고에 적는다</option>
     </select>
-    <p class="hint" style="margin:6px 0 0">만경강교 1차 조사에서 쓴 세 자루다. 같은 자루를 쓰면 지난 자료와 이어 붙일 수 있다.</p>
+    
     <div class="row" style="margin-top:6px">
       <div><label>망치 질량 (g)</label><input id="f_hmass" type="number" inputmode="numeric" placeholder="450"></div>
       <div><label>망치 비고</label><input id="f_hnote" placeholder="머리 지름 25 mm"></div>
     </div>
     </div>
 
-    <div class="btnrow"><button class="ghost" id="back1">뒤로</button><button class="primary" id="go2">다음 · 조사 시작</button></div>
   </div>
-</section>
-
-<!-- 2. 조사 -->
-<section id="step2" class="hide">
+  </div>
+  <div class="card" id="cardTap"><h2>3 · <b>타점 지정</b>과 <b>음향 수집</b></h2>
   <div class="card">
-    <h2>두들김 조사</h2>
-    <p class="hint">사진에서 칠 자리를 손가락으로 찍고 부위 구분을 고른다. <b>3초 음향 수집 시작</b>을 누르고 3초 동안 두들긴다 — 아래 그래프에 파형이 실시간으로 그려진다. 품질을 통과하면 자동으로 저장되고 <b>다음 조사 시작</b>이 열린다. 마이크 없이 좌표만 남기려면 «이 부위 기록»을 쓴다.</p>
+    <p class="hint">사진에서 칠 자리를 찍고 → 부위 구분 → 3초 두들긴다. 통과하면 저절로 기록된다.</p>
     <div class="stage bleed" id="surveyStage"><canvas id="surveyCv"></canvas></div>
     <div class="readout">
       <span>좌표 <b id="selMm">—</b></span><span>상대 <b id="selRel">—</b></span><span id="dupOut"></span>
@@ -242,10 +287,10 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
 
     <div id="micArea">
       <div class="note info" id="micBanner">마이크를 켜면 3초 녹음이 함께 저장된다. 켜지 않아도 좌표와 구분은 기록된다.</div>
-      <div class="btnrow"><button class="primary" id="micOn">마이크 켜기</button></div>
+      <div class="btnrow"><button class="primary big" id="micOn">🎙 마이크 켜기</button></div>
     </div>
     <div id="recArea" class="hide">
-      <div class="btnrow"><button class="primary" id="btnRec">3초 음향 수집 시작</button></div>
+      <div class="btnrow"><button class="primary big" id="btnRec">🎙 3초 음향 수집</button></div>
       <div class="bar"><i id="recBar"></i></div>
       <div class="stage" style="margin-top:8px"><canvas id="wave"></canvas></div>
       <div class="readout">
@@ -253,10 +298,10 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
         <span>SNR <b id="qSnr">—</b></span><span>타격 <b id="qOn">—</b></span>
       </div>
       <div id="qcMsg"></div>
-      <div class="btnrow"><button class="primary" id="btnNext" disabled>다음 조사 시작</button></div>
+      <div class="btnrow"><button class="primary big" id="btnNext" disabled>다음 자리로</button></div>
     </div>
     <div id="m2"></div>
-    <div class="btnrow"><button class="ghost" id="btnAdd">이 부위 기록 (녹음 없이)</button></div>
+    <div class="btnrow"><button class="ghost mini" id="btnAdd">녹음 없이 이 자리만 기록</button></div>
 
     <div class="stat">
       <div><div class="k">전체</div><div class="v" id="cAll">0</div></div>
@@ -265,19 +310,15 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <div><div class="k">건전</div><div class="v" id="cSnd">0</div></div>
     </div>
     <div class="taplist" id="tapList"><div class="empty">아직 기록된 부위가 없다</div></div>
-    <div class="btnrow"><button class="ghost" id="back2">뒤로</button><button class="primary" id="go3">조사 종료 및 저장</button></div>
   </div>
-</section>
-
-<!-- 3. 저장 -->
-<section id="step3" class="hide">
+  </div>
+  <div class="card side" id="cardSave"><h2>4 · 저장</h2>
   <div class="card">
-    <h2>조사 종료 및 저장</h2>
     <div id="saveGate"></div>
     <div id="saveBody" class="hide">
       <div class="fname" id="fnAll">—</div>
       <div class="btnrow">
-        <button class="ghost" id="dlAll">내 기기에 저장</button>
+        <button class="ghost mini" id="dlAll">내 기기에 저장</button>
         <button class="primary" id="cxPush">데이터 보내기</button>
       </div>
       <div id="dlNote"></div>
@@ -292,15 +333,16 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
         <input id="cx_url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
         <label>암구호 (창구가 요구할 때만)</label>
         <input id="cx_key" type="password" placeholder="보통은 비워 둔다" autocomplete="off">
-        <div class="btnrow"><button class="ghost" id="cxSave">이 주소로 기억</button>
-          <button class="ghost" id="cxReset">기본값으로</button></div>
+        <div class="btnrow"><button class="ghost mini" id="cxSave">이 주소로 기억</button>
+          <button class="ghost mini" id="cxReset">기본값으로</button></div>
       </div>
       <div id="pvBox" class="hide">
-        <div class="btnrow" style="margin-top:10px"><button class="ghost" id="cpCsv">CSV 복사</button></div>
+        <div class="btnrow" style="margin-top:10px"><button class="ghost mini" id="cpCsv">CSV 복사</button></div>
         <pre id="csvOut"></pre>
       </div>
     </div>
-    <div class="btnrow"><button class="ghost" id="back3">뒤로</button><button class="ghost" id="btnNew">새 조사</button></div>
+  </div>
+    <div class="btnrow"><button class="ghost mini" id="btnNew">새 조사</button></div>
   </div>
 </section>
 
@@ -403,12 +445,42 @@ function refreshTag(){
  const t=[$("f_bridge").value,$("f_member").value,$("f_loc").value].filter(Boolean).join(" · ");
  $("tagOut").textContent=t||"—";}
 
-function setStep(n){S.step=n;
- if(n!==1&&CAM&&CAM.stream)closeCam();
- ["step0","step1","step2","step3"].forEach((id,i)=>$(id).classList.toggle("hide",i!==n));
- for(let i=0;i<4;i++){const d=$("s"+i);d.className=i<n?"done":(i===n?"on":"");}
- $("stepName").textContent=["1 / 4 · 조사 정보","2 / 4 · 사진과 치수","3 / 4 · 두들김 조사","4 / 4 · 종료 및 저장"][n];
- if(n===1)drawFace(); if(n===2)drawSurvey();}
+function setStep(n){
+ S.step=n;
+ $("intro").classList.toggle("hide",n!==0);
+ $("work").classList.toggle("hide",n===0);
+ if(n===0&&CAM&&CAM.stream)closeCam();
+ if(n===1){drawFace();drawSurvey();refreshSave();}}
+
+/* 조사 화면은 한 장이다. 아직 못 하는 단계는 왜 못 하는지 적어 둔다. */
+function refreshSave(){
+ if(S.step!==1)return;
+ const miss=[];
+ if(!$("f_date").value)miss.push("조사 날짜");
+ if(!$("f_bridge").value)miss.push("교량명");
+ if(!$("f_member").value)miss.push("교량부재");
+ if(!$("f_loc").value)miss.push("위치");
+ if(!S.face)miss.push("조사면 사진");
+ if(!S.frame)miss.push("가로 실제 길이");
+ if(!S.rows.length)miss.push("기록된 부위");
+ const ok=!miss.length;
+ $("cardTap").classList.toggle("dim",!S.frame);
+ $("cardSave").classList.toggle("dim",!ok);
+ if(ok){
+  BASE=baseName();CSV=buildCsv(BASE);
+  const nAud=S.rows.filter(r=>r.audio).length;
+  $("saveGate").innerHTML='<div class="note"><b>준비됨</b> · 부위 '+S.rows.length+'개 · 음향 '+nAud+
+   '개 · 좌표 오차 σ '+S.frame.sigmaMm().toFixed(0)+' mm</div>';
+  const n=1+(S.face?2:0)+(S.ham?1:0)+nAud;
+  $("fnAll").innerHTML="파일 "+n+"개 · <b>"+BASE+"</b><br>"+
+   '<span style="color:var(--muted)">.csv'+(S.face?" · .jpg · <b>-표시.jpg</b>":"")+
+   (S.ham?" · -hammer.jpg":"")+(nAud?" · -T001.wav 외 "+(nAud-1)+"개":"")+"</span>";
+  $("csvOut").textContent=CSV.length>4000?CSV.slice(0,4000)+"\n… ("+CSV.length+"자)":CSV;
+  cxSync();
+  $("saveBody").classList.remove("hide");
+ }else{
+  $("saveGate").innerHTML='<div class="note cau">아직 저장할 수 없다 — '+miss.join(" / ")+'</div>';
+  $("saveBody").classList.add("hide");}}
 
 /* ================= 사진과 박스 ================= */
 function loadImg(file,cb){const img=new Image();
@@ -523,19 +595,19 @@ $("f_h").addEventListener("input",()=>{autoDim("h");buildFrame();});
 
 function buildFrame(){
  const W=+$("f_w").value,H=+$("f_h").value;
- if(!S.box||!W||!H){S.frame=null;$("go2").disabled=true;
+ if(!S.box||!W||!H){S.frame=null;
   $("boxSize").textContent="—";$("scaleOut").textContent="—";$("sigPill").innerHTML="";
-  $("m1").innerHTML=S.box?'<div class="note cau">가로·세로 실제 길이를 넣어야 좌표가 계산된다.</div>':"";
-  drawFace();return;}
+  $("m1").innerHTML=S.box?'<div class="note cau">가로 실제 길이를 넣어야 좌표가 계산된다.</div>':"";
+  drawFace();refreshSave();return;}
  S.frame=TapCoords.PhotoFrame(S.box,[{x:0,y:0},{x:W,y:0},{x:W,y:H},{x:0,y:H}]);
- if(!S.frame){$("go2").disabled=true;$("m1").innerHTML='<div class="note warn">박스가 뒤집혔거나 한 줄로 겹쳤다. 모서리를 다시 배치하라.</div>';drawFace();return;}
+ if(!S.frame){$("m1").innerHTML='<div class="note warn">박스가 뒤집혔거나 한 줄로 겹쳤다. 모서리를 다시 배치하라.</div>';drawFace();refreshSave();return;}
  const sig=S.frame.sigmaMm(),mpp=S.frame.mmPerPx();
  $("boxSize").textContent=W+" × "+H+" mm";
  $("scaleOut").textContent=isFinite(mpp)?mpp.toFixed(2)+" mm/px":"—";
  const ok=isFinite(sig)&&sig<=TapCoords.SPEC.sigmaMax;
  $("sigPill").innerHTML=isFinite(sig)?('<span class="pill '+(ok?"ok":"bad")+'">좌표 오차 σ '+sig.toFixed(0)+' mm</span>'):"";
  $("m1").innerHTML=ok?"":'<div class="note cau">좌표 오차가 '+sig.toFixed(0)+' mm 다. 사진을 더 가까이·정면에서 찍거나 박스를 넓게 잡으면 줄어든다. 그대로 진행할 수는 있다.</div>';
- $("go2").disabled=false; drawFace(); markDirty();}
+ drawFace(); markDirty(); refreshSave();}
 
 function fitCanvas(cv,w,h){
  const dpr=Math.min(devicePixelRatio||1,2),cw=cv.parentElement.clientWidth||360;
@@ -760,7 +832,7 @@ function addRow(){
   S.sel=null;$("f_note").value="";$("f_note").parentElement.classList.remove("has");
   $("selMm").textContent="—";$("selRel").textContent="—";$("dupOut").innerHTML="";}
  S.pending=null;
- refreshList();drawSurvey();return no;}
+ refreshList();drawSurvey();refreshSave();return no;}
 function refreshList(){
  const c={"보수부위":0,"열화부위":0,"건전부":0};
  S.rows.forEach(r=>{if(c[r.feat]!==undefined)c[r.feat]++;});
@@ -778,7 +850,7 @@ function refreshList(){
   const gone=S.rows.find(r=>r.no==b.dataset.del);
   S.rows=S.rows.filter(r=>r.no!=b.dataset.del);
   if(gone)tapDel(gone.tapId); saveSession();
-  refreshList();drawSurvey();});}
+  refreshList();drawSurvey();refreshSave();});}
 
 /* ================= 파일명 · CSV ================= */
 const safe=s=>(s||"").trim().replace(/[\\/:*?"<>|\s]+/g,"_")||"미기입";
@@ -821,45 +893,6 @@ function buildCsv(base){
  return L.join("\r\n");}
 
 let CSV="",BASE="";
-$("go3").onclick=()=>{
- const miss=[];
- if(!$("f_date").value)miss.push("조사 날짜");
- if(!$("f_bridge").value)miss.push("교량명");
- if(!$("f_member").value)miss.push("교량부재");
- if(!$("f_loc").value)miss.push("위치");
- if(!S.face)miss.push("조사면 사진");
- if(!S.frame)miss.push("가로·세로 실제 길이");
- if(!S.rows.length)miss.push("기록된 부위");
- if(miss.length){
-  $("saveGate").innerHTML='<div class="note warn"><b>저장할 수 없다</b><br>'+miss.join(" / ")+' 이(가) 없다.</div>';
-  $("saveBody").classList.add("hide");setStep(3);return;}
- BASE=baseName();CSV=buildCsv(BASE);
- const nAud=S.rows.filter(r=>r.audio).length;
- $("saveGate").innerHTML='<div class="note"><b>준비됨</b> · 부위 '+S.rows.length+'개 · 음향 '+nAud+'개 · 좌표 오차 σ '+S.frame.sigmaMm().toFixed(0)+' mm</div>';
- const n=1+(S.face?2:0)+(S.ham?1:0)+nAud;
- $("fnAll").innerHTML="파일 "+n+"개 · <b>"+BASE+"</b><br>"+
-  '<span style="color:var(--muted)">.csv'+(S.face?" · .jpg · <b>-표시.jpg</b>":"")+
-  (S.ham?" · -hammer.jpg":"")+
-  (nAud?" · -T001.wav 외 "+(nAud-1)+"개":"")+"</span>";
- $("csvOut").textContent=CSV.length>4000?CSV.slice(0,4000)+"\n… ("+CSV.length+"자)":CSV;
- cxSync();
- $("saveBody").classList.remove("hide");setStep(3);};
-/* 저장 — 뷰어가 파일 저장 기능을 주면 그것을 쓰고, 아니면 보통의 다운로드 링크로 떨어진다.
-   뷰어의 허용 확장자에 wav 가 없어 음향은 배포본에서만 받아진다. */
-let DL=null;
-if(window.claude&&window.claude.use)window.claude.use("downloads").then(d=>{DL=d;},()=>{});
-async function saveOne(data,name){
- if(DL){try{await DL.save({filename:name,data});return "저장됨";}
-  catch(e){const c=e&&e.code;
-   if(c==="declined")return "취소함";
-   if(c==="too_large")return "용량 초과";
-   if(c!=="rejected_extension"&&c!=="extension_not_enabled")return c||"실패";}}
- try{const a=document.createElement("a");
-  a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data]));
-  a.download=name;document.body.appendChild(a);a.click();a.remove();
-  return DL?"이 미리보기에서는 받아지지 않는다":"내려받기 시도";}catch(e){return "막힘";}}
-function dlLog(lines){$("dlNote").innerHTML='<div class="note info"><b>저장 결과</b><br>'+
- lines.join("<br>")+'</div>';}
 /* 내 기기에 저장 — CSV·사진·음향을 한 번에 */
 $("dlAll").onclick=async()=>{
  $("dlAll").disabled=true;const log=[];
@@ -963,7 +996,7 @@ const I16toF32=i=>{const n=i.length,o=new Float32Array(n);
 const FORMIDS=["f_date","f_bridge","f_member","f_loc","f_insp","f_th",
                "f_w","f_h","f_hid","f_hmass","f_hnote"];
 let saveT=0, saveOn=true;
-function markDirty(){if(!saveOn)return;clearTimeout(saveT);saveT=setTimeout(saveSession,600);}
+function markDirty(){refreshSave();if(!saveOn)return;clearTimeout(saveT);saveT=setTimeout(saveSession,600);}
 async function saveSession(){
  if(!saveOn)return;
  try{
@@ -1023,7 +1056,7 @@ function doResume(sess,taps){
   $("hamName").textContent=sess.ham.name||"망치 사진";$("hamName").classList.add("has");}
  const finish=()=>{saveOn=true;refreshList();syncLock();
   $("resumeBox").innerHTML='<div class="note ok">이어서 하는 중이다. 타점 '+S.rows.length+'개를 되살렸다.</div>';
-  setStep(S.rows.length?2:1);};
+  setStep(1);window.scrollTo(0,0);};
  if(sess.face&&sess.face.blob){
   const img=new Image(),url=URL.createObjectURL(sess.face.blob);
   img.onload=()=>{
@@ -1117,27 +1150,18 @@ $("cxPush").onclick=async()=>{
   (warned?'<br><b style="color:var(--rust)">창구 알림 — '+warned+'</b>':""),"");
  $("cxPush").disabled=false;};
 /* ================= 이동 ================= */
-$("go1").onclick=()=>{
- const miss=[];["f_date","f_bridge","f_member","f_loc"].forEach((id,i)=>{
-  if(!$(id).value)miss.push(["조사 날짜","교량명","교량부재","위치"][i]);});
- if(miss.length){$("m0").innerHTML='<div class="note warn">'+miss.join(" / ")+' 을(를) 채워라.</div>';return;}
- $("m0").innerHTML="";setStep(1);};
-$("back1").onclick=()=>setStep(0);
-$("go2").onclick=()=>{if(!S.frame){$("m1").innerHTML='<div class="note warn">사진과 가로·세로 길이가 있어야 한다.</div>';return;}setStep(2);};
-$("back2").onclick=()=>setStep(1);
-$("back3").onclick=()=>setStep(2);
+$("goWork").onclick=()=>{setStep(1);window.scrollTo(0,0);};
 $("btnNew").onclick=()=>{if(!confirm("새 조사를 시작한다. 저장하지 않은 기록은 사라진다."))return;
  S.rows=[];S.seq=0;S.sel=null;S.pending=null;S.face=null;S.ham=null;S.box=null;S.frame=null;
  ["p_face","p_faceF","p_ham","p_hamF"].forEach(i=>{$(i).value="";});
  $("hamThumb").classList.add("hide");
  ["faceName","hamName"].forEach(i=>{$(i).textContent="아직 없음";$(i).classList.remove("has");});
  $("faceStage").classList.add("hide");$("faceRead").classList.add("hide");
- $("btnNext").disabled=true;$("go2").disabled=true;
- BOX.locked=true;syncLock();$("f_w").value="";$("f_h").value="";
+ $("btnNext").disabled=true;BOX.locked=true;syncLock();$("f_w").value="";$("f_h").value="";
  idbWipe();$("resumeBox").innerHTML="";
- refreshList();setStep(0);};
+ refreshList();setStep(0);window.scrollTo(0,0);};
 window.addEventListener("resize",()=>{if(S.step===1)drawFace();if(S.step===2)drawSurvey();});
-$("go2").disabled=true;syncLock();refreshList();refreshTag();setStep(0);
+syncLock();refreshList();refreshTag();setStep(0);
 FORMIDS.forEach(i=>{const e=$(i);if(e)e.addEventListener("input",markDirty);});
 checkResume();
 
