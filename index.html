@@ -103,9 +103,10 @@ canvas{display:block;width:100%;height:auto}
 pre{font-family:"IBM Plex Mono",monospace;font-size:10.5px;background:var(--surface-2);
  border:1px solid var(--line-soft);border-radius:8px;padding:10px;overflow:auto;max-height:230px;margin:8px 0}
 .bleed{margin-left:-16px;margin-right:-16px;border-radius:0;border-left:0;border-right:0}
-.cam{position:relative;margin:12px -16px 0;background:#000;overflow:hidden;
- height:min(52vh,380px)}
-.cam video{display:block;width:100%;height:100%;object-fit:contain;background:#000}
+/* 촬영 화면과 결과 사진이 같은 크기로 보이도록 4:3 으로 고정하고,
+   영상은 그 틀을 꽉 채운다(cover). 촬영할 때도 보이는 그대로만 잘라 담는다. */
+.cam{position:relative;margin:12px -16px 0;background:#000;overflow:hidden;aspect-ratio:4/3}
+.cam video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
 .cam canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .camtip{position:absolute;left:0;right:0;top:8px;text-align:center;color:#fff;font-size:12px;
  text-shadow:0 1px 4px #000;pointer-events:none}
@@ -537,12 +538,10 @@ function drawCam(){
  const W=v.clientWidth,H=v.clientHeight,dpr=Math.min(devicePixelRatio||1,2);
  cv.width=W*dpr;cv.height=H*dpr;
  const g=cv.getContext("2d");g.setTransform(dpr,0,0,dpr,0,0);g.clearRect(0,0,W,H);
- /* object-fit:contain 이라 영상이 레터박스로 들어간다. 테두리는 그 «실제 영상
-    영역» 위에 그려야 촬영된 사진의 박스와 정확히 같은 자리가 된다. */
- const sc=Math.min(W/v.videoWidth,H/v.videoHeight);
- const vw=v.videoWidth*sc,vh=v.videoHeight*sc,ox=(W-vw)/2,oy=(H-vh)/2;
- const bb=presetBox(vw,vh);
- const x0=bb[3].x+ox,y0=bb[3].y+oy,w=bb[1].x-bb[0].x,h=bb[0].y-bb[3].y;
+ /* 영상이 틀을 꽉 채우므로(cover) 테두리는 틀 위에 그대로 그린다.
+    촬영 때 이 틀에 보이는 부분만 잘라 담으므로 자리가 어긋나지 않는다. */
+ const bb=presetBox(W,H);
+ const x0=bb[3].x,y0=bb[3].y,w=bb[1].x-bb[0].x,h=bb[0].y-bb[3].y;
  g.fillStyle="rgba(0,0,0,.42)";
  g.fillRect(0,0,W,y0);g.fillRect(0,y0+h,W,H-y0-h);
  g.fillRect(0,y0,x0,h);g.fillRect(x0+w,y0,W-x0-w,h);
@@ -561,8 +560,13 @@ $("camFace").onclick=openCam;
 $("camClose").onclick=closeCam;
 $("camShot").onclick=()=>{
  const v=$("camVid");if(!v.videoWidth)return;
- const c=document.createElement("canvas");c.width=v.videoWidth;c.height=v.videoHeight;
- c.getContext("2d").drawImage(v,0,0);
+ /* 화면에 보이던 부분만 잘라 담는다 — 보이는 것이 곧 찍히는 것 */
+ const cw=v.clientWidth,ch=v.clientHeight;
+ const sc=Math.max(cw/v.videoWidth,ch/v.videoHeight);
+ const sw=Math.round(cw/sc),sh=Math.round(ch/sc);
+ const sx=Math.round((v.videoWidth-sw)/2),sy=Math.round((v.videoHeight-sh)/2);
+ const c=document.createElement("canvas");c.width=sw;c.height=sh;
+ c.getContext("2d").drawImage(v,sx,sy,sw,sh,0,0,sw,sh);
  c.toBlob(b=>{
   const st=CAM.track&&CAM.track.getSettings?CAM.track.getSettings():{};
   closeCam();
@@ -907,6 +911,32 @@ $("dlAll").onclick=async()=>{
  if(auds.length&&DL)log.push("<b>이 화면에서는 음향을 못 받는다.</b> 휴대폰의 실제 주소에서 받으라.");
  dlLog(log);$("dlAll").disabled=false;};
 
+
+/* ================= 파일 내보내기 공용 =================
+   뷰어가 파일 저장 기능을 주면 그것을 쓰고, 아니면 보통의 다운로드 링크로
+   떨어진다. base64 변환은 저장과 전송이 함께 쓴다. */
+let DL=null;
+if(window.claude&&window.claude.use)window.claude.use("downloads").then(d=>{DL=d;},()=>{});
+const b64=d=>new Promise((res,rej)=>{const r=new FileReader();
+ r.onload=()=>res(String(r.result).split(",")[1]);r.onerror=rej;
+ r.readAsDataURL(d instanceof Blob?d:new Blob([d]));});
+async function saveOne(data,name){
+ if(DL){try{await DL.save({filename:name,data});return "저장됨";}
+  catch(e){const c=e&&e.code;
+   if(c==="declined")return "취소함";
+   if(c==="too_large")return "용량 초과";
+   if(c!=="rejected_extension"&&c!=="extension_not_enabled")return c||"실패";}}
+ try{const a=document.createElement("a");
+  a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data]));
+  a.download=name;document.body.appendChild(a);a.click();a.remove();
+  return DL?"이 미리보기에서는 받아지지 않는다":"내려받기 시도";}catch(e){return "막힘";}}
+$("cpCsv").onclick=async()=>{try{await navigator.clipboard.writeText(CSV);
+ $("cpCsv").textContent="복사됨";setTimeout(()=>$("cpCsv").textContent="CSV 복사",1500);}
+ catch(e){const r=document.createRange();r.selectNodeContents($("csvOut"));
+  const sel=getSelection();sel.removeAllRanges();sel.addRange(r);
+  $("cpCsv").textContent="직접 복사하라";setTimeout(()=>$("cpCsv").textContent="CSV 복사",2200);}};
+function dlLog(lines){$("dlNote").innerHTML='<div class="note info"><b>저장 결과</b><br>'+
+ lines.join("<br>")+'</div>';}
 
 /* ================= 타점 표시 사진 =================
    원본 사진은 손대지 않는다. 조사면 사진에 박스·치수·타점 번호를 그린
