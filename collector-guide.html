@@ -126,19 +126,20 @@ footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);color:v
 <header>
   <div class="eyebrow">두들김 조사 · 담당자용</div>
   <h1>수집 창구 만들기</h1>
-  <p class="dek">조사자 여럿이 올린 자료를 한곳에 모으는 창구를 만든다. 한 번 만들면 끝이고, 그 뒤로 조사자에게는 <b>주소와 암구호</b>만 주면 된다.</p>
+  <p class="dek">조사자 여럿이 올린 자료를 한곳에 모으는 창구를 만든다. 한 번 만들면 끝이고, 그 뒤로 조사자는 앱에서 <b>«데이터 보내기» 를 누르기만</b> 하면 된다. 암구호도 계정도 없다.</p>
   <div class="meta">
     <span class="badge">약 10분</span>
     <span class="badge">구글 계정 1개 (담당자만)</span>
     <span class="badge">비용 없음</span>
-    <span class="badge">조사자는 계정 불필요</span>
+    <span class="badge">조사자는 누르기만</span>
   </div>
 </header>
 
 <div class="why">
   <h2>왜 이렇게 하나 — 조사자에게 토큰을 주면 안 되는 이유</h2>
   <p>저장소 쓰기 토큰은 <b>그 저장소 전체에 대한 권한</b>이다. 받은 사람은 남의 조사 자료를 지우거나 덮어쓸 수 있고, 사람이 바뀌면 회수할 방법이 마땅치 않다. 열 명에게 나눠 주면 열 개의 열쇠가 돌아다니는 셈이다.</p>
-  <p>창구를 두면 <b>자격증명은 창구 안에만</b> 있다. 조사자는 «여기로 보내라» 는 주소만 안다. 그 주소로는 <b>올리는 것만</b> 되고 읽기도 삭제도 안 되므로, 주소가 새어도 남의 자료를 가져갈 수 없다.</p>
+  <p>창구를 두면 <b>자격증명은 창구 안에만</b> 있다. 앱에는 «여기로 보내라» 는 주소만 박힌다. 그 주소로는 <b>올리는 것만</b> 되고 읽기도 삭제도 안 되므로, 주소가 새어도 남의 자료를 가져갈 수 없다.</p>
+  <p><b>암구호는 두지 않는다.</b> 조사자에게 외울 것을 하나 더 주면 현장에서 «비밀번호가 뭐였죠» 로 조사가 멈춘다. 대신 창구 쪽에 넷을 두었다 — <b>이름 검사</b>(조사 파일 형식이 아니면 거부), <b>크기 제한</b>(20 MB), <b>하루 상한</b>(600 파일), <b>차단 스위치</b>. 조사자는 이 넷을 전혀 느끼지 않는다.</p>
 </div>
 
 <h2 class="part">만들기</h2>
@@ -163,39 +164,49 @@ footer{margin-top:60px;padding-top:18px;border-top:1px solid var(--line);color:v
         <pre id="code">/**
  * 두들김 조사 — 수집 창구 (Google Apps Script)
  *
- * 조사자에게 저장소 쓰기 토큰을 나눠 주는 것은 구조가 틀렸다. 토큰 하나로
- * 저장소 전체를 지울 수 있고, 사람이 늘수록 회수도 관리도 안 된다.
- * 담당자가 이 창구를 한 번 만들고, 조사자에게는 «주소 + 암구호» 만 준다.
- * 구글 계정은 담당자 하나면 되고, 조사자는 아무 계정도 필요 없다.
+ * 조사자는 앱에서 «수집 서버로 보내기» 를 누르기만 한다. 암구호도 계정도 토큰도
+ * 없다. 담당자가 이 창구를 한 번 만들고 주소를 앱에 박아 두면 끝이다.
  *
- * ── 만드는 법 (5분) ────────────────────────────────────────────
+ * 암구호를 없앤 대신 아래 넷으로 막는다. 어느 것도 조사자를 귀찮게 하지 않는다.
+ *   1) 이름 검사   조사 파일 형식이 아닌 것은 받지 않는다
+ *   2) 크기 제한   파일 하나 20 MB
+ *   3) 하루 상한   하루 600 파일 (조사 60건쯤). 넘으면 그날은 닫힌다
+ *   4) 차단 스위치 OPEN 을 false 로 두면 즉시 닫힌다
+ * 모든 수신은 조사 폴더의 _수신기록.csv 에 남는다.
+ *
+ * ── 만드는 법 ──────────────────────────────────────────────────
+ *   자세한 안내: https://cnusal-1.github.io/tap-survey/collector-guide.html
+ *
  * 1. script.google.com → 새 프로젝트
  * 2. 이 파일 내용을 통째로 붙여넣는다
- * 3. 아래 SECRET 을 현장에서 쓸 값으로 바꾼다 (조사자에게 알려 줄 값)
- * 4. FOLDER 를 결과를 담을 구글 드라이브 폴더 ID 로 바꾼다
- *      드라이브에서 폴더를 열면 주소가
- *      https://drive.google.com/drive/folders/&lt;여기가 ID&gt;
+ * 3. FOLDER 를 결과를 담을 구글 드라이브 폴더 ID 로 바꾼다.
  *    비워 두면 «두들김 조사» 폴더를 내 드라이브에 자동으로 만든다
- * 5. 배포 → 새 배포 → 유형 «웹 앱»
+ * 4. 배포 → 새 배포 → 유형 «웹 앱»
  *      실행 계정 : 나
  *      액세스 권한: 모든 사용자          ← 조사자가 로그인하지 않아도 되게
- *    배포를 누르면 권한 승인을 한 번 요구한다. 승인한다
- * 6. 나오는 /exec 주소를 조사자에게 준다. 앱의 «수집 주소» 칸에 넣는다
+ *    권한 승인을 한 번 요구한다. 승인한다
+ * 5. 나오는 /exec 주소를 앱의 COLLECT_URL 에 박아 넣는다 (index.html 위쪽)
  *
  * ── 알아 둘 것 ─────────────────────────────────────────────────
- * · 주소를 아는 사람은 누구나 올릴 수 있다. 암구호는 장난 업로드를 막는
- *   최소한의 문턱이지 강한 인증이 아니다. 올라온 것을 담당자가 확인한다
- * · 이 창구는 «쓰기만» 한다. 읽기도 삭제도 안 된다. 주소가 새어도 남의
- *   조사 자료를 가져갈 수는 없다
- * · 앱은 파일을 하나씩 나눠 보낸다. 현장 통신에서 8 MB 한 방은 잘 끊긴다
+ * · 주소를 아는 사람은 누구나 올릴 수 있다. 그래서 위의 넷이 있다
+ * · 이 창구는 «쓰기만» 한다. 읽기도 삭제도 없다. 주소가 새어도 남의 조사
+ *   자료를 가져갈 수는 없다
  * · 코드를 고치면 «배포 → 배포 관리 → 편집 → 새 버전» 을 해야 반영된다
  */
 
-var SECRET = &quot;여기를-현장-암구호로-바꾼다&quot;;
-var FOLDER = &quot;&quot;;   // 구글 드라이브 폴더 ID. 비우면 자동 생성
+var FOLDER    = &quot;&quot;;      // 구글 드라이브 폴더 ID. 비우면 자동 생성
+var OPEN      = true;    // false 로 두면 창구를 닫는다
+var MAXBYTES  = 20 * 1024 * 1024;   // 파일 하나 상한
+var DAILYCAP  = 600;                // 하루에 받을 파일 수 상한
+var SECRET    = &quot;&quot;;      // 비워 두면 암구호를 묻지 않는다. 쓰려면 값을 넣는다
+
+/* 받을 파일 이름 — 앱이 만드는 형식만 통과시킨다
+   예) 20260902_1430-만경강교-P22-코핑_하면(동쪽)-T001.wav              */
+var NAME_OK = /^\d{8}_\d{4}-.+\.(csv|jpg|jpeg|png|wav)$/i;
 
 function doPost(e) {
   try {
+    if (!OPEN) return reply({ ok: false, error: &quot;창구가 닫혀 있다. 담당자에게 문의하라&quot; });
     if (!e || !e.postData || !e.postData.contents) return reply({ ok: false, error: &quot;빈 요청&quot; });
 
     var q = JSON.parse(e.postData.contents);
@@ -203,18 +214,26 @@ function doPost(e) {
     if (SECRET &amp;&amp; String(q.key || &quot;&quot;) !== SECRET) return reply({ ok: false, error: &quot;암구호 불일치&quot; });
     if (!q.survey || !q.name || !q.data) return reply({ ok: false, error: &quot;survey·name·data 가 필요하다&quot; });
 
-    /* 경로 조작을 막는다 — 폴더 이름과 파일 이름에서 구분자를 걷어낸다 */
     var survey = String(q.survey).replace(/[\/\\:*?&quot;&lt;&gt;|]/g, &quot;_&quot;).slice(0, 120);
     var name   = String(q.name).replace(/[\/\\:*?&quot;&lt;&gt;|]/g, &quot;_&quot;).slice(0, 160);
+
+    /* 1) 이름 검사 — 조사 파일이 아닌 것을 걸러낸다 */
+    if (!NAME_OK.test(name)) return reply({ ok: false, error: &quot;조사 파일 형식이 아니다: &quot; + name });
+
+    /* 2) 크기 제한 */
+    var bytes = Utilities.base64Decode(q.data);
+    if (bytes.length &gt; MAXBYTES) {
+      return reply({ ok: false, error: &quot;파일이 너무 크다 (&quot; + Math.round(bytes.length / 1048576) + &quot; MB)&quot; });
+    }
+
+    /* 3) 하루 상한 */
+    var used = bump_();
+    if (used &gt; DAILYCAP) return reply({ ok: false, error: &quot;오늘 받을 수 있는 양을 넘었다. 내일 다시 보내라&quot; });
 
     var root = FOLDER ? DriveApp.getFolderById(FOLDER) : rootFolder_();
     var dir  = childFolder_(root, survey);
 
-    var blob = Utilities.newBlob(
-      Utilities.base64Decode(q.data),
-      q.type || &quot;application/octet-stream&quot;,
-      name
-    );
+    var blob = Utilities.newBlob(bytes, q.type || &quot;application/octet-stream&quot;, name);
 
     /* 같은 이름이 이미 있으면 덮어쓴다 — 통신이 끊겨 다시 보낸 경우다 */
     var old = dir.getFilesByName(name);
@@ -223,16 +242,19 @@ function doPost(e) {
     var f = dir.createFile(blob);
 
     log_(dir, q, name, f.getSize());
-    return reply({ ok: true, id: f.getId(), bytes: f.getSize() });
+    return reply({ ok: true, id: f.getId(), bytes: f.getSize(), todayUsed: used, dailyCap: DAILYCAP });
 
   } catch (err) {
     return reply({ ok: false, error: String(err &amp;&amp; err.message || err) });
   }
 }
 
-/* 브라우저로 주소를 열었을 때 — 살아 있는지만 알려 준다 */
+/* 브라우저로 주소를 열었을 때 — 살아 있는지와 오늘 남은 양만 알려 준다 */
 function doGet() {
-  return reply({ ok: true, service: &quot;두들김 조사 수집 창구&quot;, note: &quot;POST 로 보낸다&quot; });
+  return reply({
+    ok: true, service: &quot;두들김 조사 수집 창구&quot;,
+    open: OPEN, todayUsed: peek_(), dailyCap: DAILYCAP, note: &quot;POST 로 보낸다&quot;
+  });
 }
 
 function reply(o) {
@@ -240,11 +262,34 @@ function reply(o) {
     .setMimeType(ContentService.MimeType.JSON);
 }
 
+/* ---------- 하루 상한 ---------- */
+function dayKey_() {
+  return &quot;cnt_&quot; + Utilities.formatDate(new Date(), Session.getScriptTimeZone(), &quot;yyyyMMdd&quot;);
+}
+function bump_() {
+  var p = PropertiesService.getScriptProperties();
+  var k = dayKey_();
+  var lock = LockService.getScriptLock();
+  try {
+    lock.waitLock(5000);
+    var n = parseInt(p.getProperty(k) || &quot;0&quot;, 10) + 1;
+    p.setProperty(k, String(n));
+    return n;
+  } catch (e) {
+    return parseInt(p.getProperty(k) || &quot;0&quot;, 10) + 1;   // 잠금 실패해도 업로드는 막지 않는다
+  } finally {
+    try { lock.releaseLock(); } catch (e) {}
+  }
+}
+function peek_() {
+  return parseInt(PropertiesService.getScriptProperties().getProperty(dayKey_()) || &quot;0&quot;, 10);
+}
+
+/* ---------- 폴더 ---------- */
 function rootFolder_() {
   var it = DriveApp.getFoldersByName(&quot;두들김 조사&quot;);
   return it.hasNext() ? it.next() : DriveApp.createFolder(&quot;두들김 조사&quot;);
 }
-
 function childFolder_(parent, name) {
   var it = parent.getFoldersByName(name);
   return it.hasNext() ? it.next() : parent.createFolder(name);
@@ -278,11 +323,18 @@ function log_(dir, q, name, bytes) {
   <div class="step">
     <div class="sn">3</div>
     <div class="sbody">
-      <h3>암구호를 정한다</h3>
-      <p>코드 위쪽의 이 줄을 찾아 바꾼다. 이 값이 <b>조사자에게 알려 줄 암구호</b>다.</p>
-      <div class="codewrap"><pre>var SECRET = "여기를-현장-암구호로-바꾼다";</pre></div>
-      <p>예: <span class="click">만경강교2026</span>. 어렵게 만들 필요는 없다 — 지나가는 사람의 장난 업로드를 막는 문턱이지 비밀번호가 아니다.</p>
-      <p>바로 아래 <span class="mono">var FOLDER = "";</span> 는 <b>비워 둔다.</b> 그러면 내 드라이브에 «두들김 조사» 폴더를 알아서 만든다. 특정 폴더에 넣고 싶으면 그 폴더를 드라이브에서 열었을 때 주소 끝에 붙는 ID 를 넣는다.</p>
+      <h3>설정을 확인한다 (대개 그대로 두면 된다)</h3>
+      <p>코드 위쪽의 다섯 줄이 전부다. <b>손대지 않아도 동작한다.</b></p>
+      <div class="codewrap"><pre>var FOLDER   = "";                 // 비우면 «두들김 조사» 폴더를 자동 생성
+var OPEN     = true;               // false 로 두면 창구를 즉시 닫는다
+var MAXBYTES = 20 * 1024 * 1024;   // 파일 하나 20 MB
+var DAILYCAP = 600;                // 하루 600 파일 (조사 60건쯤)
+var SECRET   = "";                 // 비우면 암구호를 묻지 않는다</pre></div>
+      <ul>
+        <li>특정 폴더에 모으고 싶으면 그 폴더를 드라이브에서 열었을 때 주소 끝에 붙는 ID 를 <span class="mono">FOLDER</span> 에 넣는다</li>
+        <li>조사 인원이 많아 하루 600 파일로 모자라면 <span class="mono">DAILYCAP</span> 을 올린다</li>
+        <li>굳이 암구호를 쓰겠다면 <span class="mono">SECRET</span> 에 값을 넣는다. 그러면 조사자가 앱의 «보낼 곳 바꾸기» 에서 그 값을 넣어야 한다</li>
+      </ul>
       <p>디스크 모양 <span class="click">저장</span> 아이콘을 누른다.</p>
     </div>
   </div>
@@ -350,16 +402,25 @@ function log_(dir, q, name, bytes) {
       <p>승인이 끝나면 <b>웹 앱 URL</b> 이 나온다. <span class="mono">/exec</span> 로 끝난다.</p>
       <div class="codewrap"><pre>https://script.google.com/macros/s/AKfycb…아주긴글자…/exec</pre></div>
       <p>이 주소를 복사해 둔다. 창을 닫아 잃어버려도 <span class="click">배포</span> <span class="sep">→</span> <span class="click">배포 관리</span> 에서 다시 볼 수 있다.</p>
+      <p>그 주소를 브라우저에 그대로 붙여넣어 열면 <span class="mono">{"ok":true,…}</span> 가 나온다. 이러면 살아 있는 것이다. «스크립트를 실행할 권한이 없습니다» 가 나오면 4단계의 액세스 권한이 «모든 사용자» 가 아닌 것이다.</p>
     </div>
   </div>
 
   <div class="step">
     <div class="sn">7</div>
     <div class="sbody">
-      <h3>살아 있는지 확인한다</h3>
-      <p>그 주소를 브라우저 주소창에 그대로 붙여넣고 연다. 이렇게 나오면 정상이다.</p>
-      <div class="codewrap"><pre>{"ok":true,"service":"두들김 조사 수집 창구","note":"POST 로 보낸다"}</pre></div>
-      <p>«스크립트를 실행할 권한이 없습니다» 가 나오면 5단계의 액세스 권한이 «모든 사용자» 가 아닌 것이다.</p>
+      <h3>주소를 앱에 박아 넣는다</h3>
+      <p>이 단계가 «누르기만 하면 되게» 만드는 부분이다. 앱 저장소의 <span class="mono">index.html</span> 을 열어 위쪽의 이 줄을 찾는다.</p>
+      <div class="codewrap"><pre>const COLLECT_URL = "";
+const COLLECT_NAME = "담당자 수집 창구";</pre></div>
+      <p>따옴표 사이에 6단계의 주소를 넣고, 이름은 팀에서 부르는 대로 바꾼다.</p>
+      <div class="codewrap"><pre>const COLLECT_URL = "https://script.google.com/macros/s/AKfycb…/exec";
+const COLLECT_NAME = "구조안전팀 수집함";</pre></div>
+      <p>깃허브에서 바로 고칠 수 있다 — 파일을 열고 연필 아이콘 <span class="click">Edit</span> <span class="sep">→</span> 고치고 <span class="click">Commit changes</span>. 1~2분 뒤 반영된다.</p>
+      <div class="note">
+        <span class="lab">주소가 공개된다</span>
+        앱 저장소가 공개면 이 주소도 공개된다. 그래서 창구에 이름 검사·크기 제한·하루 상한·차단 스위치를 둔 것이다. 그래도 마음에 걸리면 앱 저장소를 비공개로 두고 사내 서버에 올리거나, <span class="mono">SECRET</span> 을 쓴다.
+      </div>
     </div>
   </div>
 
@@ -367,8 +428,8 @@ function log_(dir, q, name, bytes) {
     <div class="sn">8</div>
     <div class="sbody">
       <h3>앱에서 한 번 보내 본다</h3>
-      <p>휴대폰에서 <a href="https://cnusal-1.github.io/tap-survey/" target="_blank" rel="noopener">앱</a> 을 열고 아무 사진이나 찍어 타점 하나만 기록한 뒤, 저장 화면의 <b>수집 서버로 보내기</b> 에 주소와 암구호를 넣고 보낸다.</p>
-      <p>내 드라이브의 «두들김 조사» 폴더에 조사 이름으로 폴더가 생기고 파일이 들어와 있으면 끝이다. <span class="click">주소 기억</span> 을 눌러 두면 다음부터 안 넣어도 된다.</p>
+      <p>휴대폰에서 <a href="https://cnusal-1.github.io/tap-survey/" target="_blank" rel="noopener">앱</a> 을 열고 아무 사진이나 찍어 타점 하나만 기록한 뒤, 저장 화면에서 <b>데이터 보내기</b> 를 누른다. 그것뿐이다.</p>
+      <p>내 드라이브의 «두들김 조사» 폴더에 조사 이름으로 폴더가 생기고 파일이 들어와 있으면 끝이다. 폴더 안 <span class="mono">_수신기록.csv</span> 에 누가 언제 무엇을 올렸는지 한 줄 남는다.</p>
     </div>
   </div>
 
@@ -376,12 +437,11 @@ function log_(dir, q, name, bytes) {
 
 <h2 class="part">조사자에게 줄 것</h2>
 <div class="hand">
-  <h3>이 셋이면 된다. 계정도 토큰도 필요 없다.</h3>
+  <h3>앱 주소 하나면 된다.</h3>
   <dl>
     <dt>앱 주소</dt><dd>https://cnusal-1.github.io/tap-survey/</dd>
-    <dt>수집 주소</dt><dd>6단계에서 받은 <span class="mono">/exec</span> 주소</dd>
-    <dt>암구호</dt><dd>3단계에서 정한 값</dd>
   </dl>
+  <p style="margin:12px 0 0;font-size:15px;color:var(--ink-2)">보낼 곳은 앱에 박혀 있다. 조사자는 조사를 마치고 <b>«데이터 보내기»</b> 를 누르기만 한다. 외울 것도, 넣을 것도 없다.</p>
 </div>
 <p style="color:var(--ink-2);font-size:15px">앱을 홈 화면에 추가해 두라고 함께 일러 준다 — <b>아이폰</b> Safari 공유 <span class="mono">↑</span> <span class="sep">→</span> 홈 화면에 추가, <b>안드로이드</b> Chrome <span class="mono">⋮</span> <span class="sep">→</span> 홈 화면에 추가. 주소창 없는 전체화면으로 열려 현장에서 훨씬 낫다.</p>
 
@@ -389,9 +449,12 @@ function log_(dir, q, name, bytes) {
 <div class="tw"><table>
   <thead><tr><th>증상</th><th>원인과 조치</th></tr></thead>
   <tbody>
-    <tr><td><b>암구호 불일치</b></td><td>3단계의 <span class="mono">SECRET</span> 과 앱에 넣은 값이 다르다. 앞뒤 공백도 다르게 친다</td></tr>
+    <tr><td><b>보낼 곳이 없다</b></td><td>앱의 <span class="mono">COLLECT_URL</span> 이 비어 있다. 7단계를 하지 않았거나 반영 전이다. 급하면 조사자가 앱의 «보낼 곳 바꾸기» 에 주소를 직접 넣어도 된다</td></tr>
+    <tr><td><b>조사 파일 형식이 아니다</b></td><td>창구의 이름 검사에 걸렸다. 앱이 만든 파일이 맞다면 담당자에게 알린다 — <span class="mono">NAME_OK</span> 규칙을 넓히면 된다</td></tr>
+    <tr><td><b>오늘 받을 수 있는 양을 넘었다</b></td><td>하루 상한(600 파일)에 닿았다. <span class="mono">DAILYCAP</span> 을 올리고 새 버전으로 배포한다. 조사 기록은 기기에 남아 있으니 잃지 않는다</td></tr>
     <tr><td><b>연결하지 못했다</b></td><td>통신이 안 되는 곳이다. <b>기록은 기기에 남아 있다</b> — 통신되는 곳에서 앱을 열어 «조사 종료 및 저장» 으로 돌아가 다시 누르면 된다</td></tr>
     <tr><td><b>권한이 없습니다</b></td><td>액세스 권한이 «모든 사용자» 가 아니다. 배포 관리에서 고친다</td></tr>
+    <tr><td><b>창구가 닫혀 있다</b></td><td><span class="mono">OPEN</span> 이 false 다. 담당자가 일부러 닫은 것이다</td></tr>
     <tr><td><b>코드를 고쳤는데 그대로다</b></td><td>저장만으로는 반영되지 않는다. <span class="click">배포</span> <span class="sep">→</span> <span class="click">배포 관리</span> <span class="sep">→</span> 연필 <span class="sep">→</span> 버전 <b>새 버전</b> <span class="sep">→</span> 배포. 주소는 그대로 유지된다</td></tr>
     <tr><td><b>파일이 반만 왔다</b></td><td>중간에 끊긴 것이다. 다시 보내면 같은 이름을 덮어쓰므로 중복이 생기지 않는다</td></tr>
     <tr><td><b>드라이브가 꽉 찼다</b></td><td>조사 한 건이 10 MB 안팎이다. 무료 15 GB 면 1,000건 정도. 넘으면 오래된 조사를 다른 곳으로 옮긴다</td></tr>
@@ -401,9 +464,10 @@ function log_(dir, q, name, bytes) {
 <h2 class="part">알아 둘 것</h2>
 <div class="tw"><table>
   <tbody>
-    <tr><td style="width:32%"><b>암구호는 강한 인증이 아니다</b></td><td>주소를 아는 사람은 누구나 올릴 수 있다. 장난 업로드를 막는 최소한의 문턱으로 보고, 올라온 것을 담당자가 확인한다. 조사 폴더마다 <span class="mono">_수신기록.csv</span> 에 누가 언제 무엇을 올렸는지 남는다</td></tr>
+    <tr><td style="width:32%"><b>주소를 아는 사람은 올릴 수 있다</b></td><td>암구호를 없앤 대신 이름 검사·크기 제한·하루 상한·차단 스위치를 두었다. 어느 것도 완벽한 방어가 아니다 — 조사 폴더마다 남는 <span class="mono">_수신기록.csv</span> 로 담당자가 확인하는 것이 마지막 장치다</td></tr>
+    <tr><td><b>이상한 것이 올라오면</b></td><td><span class="mono">OPEN = false</span> 로 바꿔 새 버전 배포. 즉시 닫힌다. 이미 들어온 파일은 드라이브에 그대로 있으니 지우면 된다</td></tr>
     <tr><td><b>창구는 쓰기만 한다</b></td><td>읽기도 삭제도 코드에 없다. 주소가 새어도 남의 조사 자료를 가져갈 수 없다</td></tr>
-    <tr><td><b>암구호를 바꾸려면</b></td><td><span class="mono">SECRET</span> 을 고치고 <b>새 버전으로 다시 배포</b>한다. 주소는 그대로이므로 조사자에게 암구호만 다시 알려 주면 된다</td></tr>
+    <tr><td><b>설정을 바꾸려면</b></td><td>코드를 고치고 <b>새 버전으로 다시 배포</b>한다. 주소는 그대로이므로 앱은 손댈 필요가 없다</td></tr>
     <tr><td><b>창구를 닫으려면</b></td><td>배포 관리에서 <b>보관처리</b>. 그때부터 아무도 올릴 수 없다. 이미 들어온 파일은 드라이브에 그대로 남는다</td></tr>
   </tbody>
 </table></div>

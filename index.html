@@ -282,17 +282,21 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       </div>
       <div id="dlNote"></div>
 
-      <label style="margin-top:24px">수집 서버로 보내기</label>
-      <p class="hint" style="margin:0 0 10px">조사자는 <b>주소 하나만</b> 있으면 된다. 토큰도 계정도 필요 없다. 담당자가 수집 창구를 한 번 만들어 주소를 나눠 준다 — 만드는 법은 저장소의 <span class="mono">collector.gs</span> 참조.</p>
-      <label>수집 주소</label>
-      <input id="cx_url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
-      <label>암구호 (담당자가 정한 값)</label>
-      <input id="cx_key" type="password" placeholder="현장에서 받은 값" autocomplete="off">
-      <div class="btnrow">
-        <button class="primary" id="cxPush">수집 서버로 보내기</button>
-        <button class="ghost" id="cxSave">주소 기억</button>
+      <label style="margin-top:24px">담당자에게 보내기</label>
+      <p class="hint" id="cxWhere" style="margin:0 0 10px">—</p>
+      <div class="btnrow" style="margin-top:0">
+        <button class="primary" id="cxPush">데이터 보내기</button>
       </div>
       <div id="cxNote"></div>
+      <div style="margin-top:8px"><a href="#" id="cxToggle" style="font-size:13px">보낼 곳 바꾸기</a></div>
+      <div id="cxAdv" class="hide">
+        <label>수집 주소</label>
+        <input id="cx_url" placeholder="https://script.google.com/macros/s/…/exec" autocomplete="off">
+        <label>암구호 (창구가 요구할 때만)</label>
+        <input id="cx_key" type="password" placeholder="보통은 비워 둔다" autocomplete="off">
+        <div class="btnrow"><button class="ghost" id="cxSave">이 주소로 기억</button>
+          <button class="ghost" id="cxReset">기본값으로</button></div>
+      </div>
 
       <label style="margin-top:26px">깃허브에 직접 올리기 <span class="pill neu">담당자용</span></label>
       <p class="hint" style="margin:0 0 10px">저장소 쓰기 토큰이 필요하다. <strong>조사자에게 나눠 주지 마라</strong> — 토큰 하나로 저장소 전체를 지울 수 있다. 여러 사람이 조사한다면 위의 수집 서버를 쓴다.</p>
@@ -1006,17 +1010,41 @@ function doResume(sess,taps){
    전체를 지울 수 있고, 사람이 늘수록 관리가 안 된다. 담당자가 수집 창구를
    하나 만들어 «주소 + 암구호» 만 나눠 준다. 자격증명은 창구 안에만 있다.
    파일을 하나씩 나눠 보낸다 — 현장 통신에서 8 MB 한 방은 잘 끊긴다. */
+/* ── 담당자 설정 ────────────────────────────────────────────────
+   수집 창구 주소를 여기 한 줄만 넣으면, 조사자는 «데이터 보내기» 만
+   누르면 된다. 암구호도 계정도 없다.
+   창구 만드는 법 → collector-guide.html
+   비워 두면 앱이 조사자에게 주소를 직접 묻는다.                     */
+const COLLECT_URL = "";
+const COLLECT_NAME = "담당자 수집 창구";
+/* ─────────────────────────────────────────────────────────────── */
 const CXK="tapsurvey.cx";
-(function(){try{const c=JSON.parse(localStorage.getItem(CXK)||"{}");
- if(c.url)$("cx_url").value=c.url; if(c.key)$("cx_key").value=c.key;}catch(e){}})();
+function cxCfg(){ /* 기기에 기억한 주소가 있으면 그것, 없으면 박아 둔 기본값 */
+ let c={};try{c=JSON.parse(localStorage.getItem(CXK)||"{}");}catch(e){}
+ return {url:(c.url||COLLECT_URL||"").trim(),key:c.key!==undefined?c.key:"",custom:!!c.url};}
+function cxSync(){
+ const c=cxCfg();
+ $("cx_url").value=c.url; $("cx_key").value=c.key;
+ const has=!!c.url;
+ $("cxPush").disabled=!has;
+ $("cxWhere").innerHTML=has
+  ?(c.custom?'직접 지정한 곳으로 보낸다 — <span class="mono">'+c.url.replace(/^https:\/\//,"").slice(0,46)+'…</span>'
+            :'보낼 곳 — <b>'+COLLECT_NAME+'</b>. 누르기만 하면 된다. 암구호도 계정도 필요 없다.')
+  :'<b>보낼 곳이 정해져 있지 않다.</b> 아래 «보낼 곳 바꾸기» 에서 담당자에게 받은 수집 주소를 넣어라.';
+ if(!has)$("cxAdv").classList.remove("hide");}
+$("cxToggle").onclick=e=>{e.preventDefault();$("cxAdv").classList.toggle("hide");};
+$("cxReset").onclick=()=>{try{localStorage.removeItem(CXK);}catch(e){}
+ cxSync();cxNote("기본 창구로 되돌렸다.","");};
+cxSync();
 $("cxSave").onclick=()=>{
  try{localStorage.setItem(CXK,JSON.stringify({url:$("cx_url").value.trim(),key:$("cx_key").value}));
-  cxNote("주소를 이 기기에 기억했다. 다음부터는 안 넣어도 된다.","");}
+  cxSync();cxNote("이 기기는 앞으로 이 주소로 보낸다.","");}
  catch(e){cxNote("이 브라우저가 저장을 막고 있다.","warn");}};
 function cxNote(html,kind){$("cxNote").innerHTML='<div class="note '+(kind||"info")+'">'+html+'</div>';}
 $("cxPush").onclick=async()=>{
- const url=$("cx_url").value.trim(), key=$("cx_key").value;
- if(!/^https:\/\//.test(url)){cxNote("수집 주소가 https 로 시작해야 한다.","warn");return;}
+ const c=cxCfg(), url=c.url, key=c.key;
+ if(!/^https:\/\//.test(url)){cxNote("보낼 곳이 없다. «보낼 곳 바꾸기» 에서 수집 주소를 넣어라.","warn");
+  $("cxAdv").classList.remove("hide");return;}
  const jobs=[[BASE+".csv","text/csv",new Blob(["\uFEFF"+CSV],{type:"text/csv"})]];
  if(S.face)jobs.push([BASE+".jpg","image/jpeg",S.face.file]);
  if(S.ham)jobs.push([BASE+"-hammer.jpg","image/jpeg",S.ham.file]);
@@ -1041,7 +1069,9 @@ $("cxPush").onclick=async()=>{
    log.push("✗ "+name+" — "+m);
    if(/Failed to fetch|NetworkError|blocked/i.test(m))
     log.push("<b>연결하지 못했다.</b> 통신이 되는 곳에서 다시 보내라. 기록은 이 기기에 남아 있으니 나중에 «조사 종료 및 저장» 으로 돌아와 다시 누르면 된다.");
-   else if(/401|403|\uc554\uad6c\ud638/.test(m))log.push("암구호가 맞는지 확인하라.");
+   else if(/\uc554\uad6c\ud638/.test(m))log.push("이 창구는 암구호를 요구한다. «보낼 곳 바꾸기» 에서 담당자에게 받은 값을 넣어라.");
+   else if(/\ud615\uc2dd\uc774 \uc544\ub2c8/.test(m))log.push("창구가 조사 파일 형식이 아니라고 거부했다. 담당자에게 알려라.");
+   else if(/\ub118\uc5c8\ub2e4|\ub2eb\ud600/.test(m))log.push("담당자에게 알려라. 기록은 이 기기에 남아 있으니 나중에 다시 보내면 된다.");
    show();$("cxPush").disabled=false;return;}
   show();}
  cxNote("<b>모두 보냈다 — "+done+"개.</b><br>"+log.join("<br>")+
