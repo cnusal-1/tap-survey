@@ -27,27 +27,27 @@
 *{box-sizing:border-box}
 body{margin:0;background:var(--ground);color:var(--ink);
  font-family:"IBM Plex Sans KR",-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo",sans-serif;
- font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all}
+ font-size:17px;line-height:1.65;-webkit-font-smoothing:antialiased;word-break:keep-all}
 .mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,monospace}
 a{color:var(--accent);text-underline-offset:2px}
-.wrap{max-width:580px;margin:0 auto;padding:0 16px 110px}
+.wrap{max-width:580px;margin:0 auto;padding:0 16px 40px}
 header{position:sticky;top:0;z-index:20;background:var(--ground);border-bottom:1px solid var(--line);padding:12px 0 10px}
 .htop{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
-h1{font-size:17px;margin:0;font-weight:700;letter-spacing:-.01em}
-.tag{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--accent);font-weight:600;text-align:right}
+h1{font-size:19px;margin:0;font-weight:700;letter-spacing:-.01em}
+.tag{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--accent);font-weight:600;text-align:right}
 .steps{display:flex;gap:4px;margin-top:10px}
 .steps div{flex:1;height:3px;border-radius:2px;background:var(--line)}
 .steps div.on{background:var(--accent)}.steps div.done{background:var(--good)}
 .stepname{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;
  text-transform:uppercase;color:var(--muted);margin-top:7px}
-.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:10px;padding:16px;margin:14px 0}
+.card{background:var(--surface);border:1px solid var(--line-soft);border-radius:10px;padding:14px;margin:10px 0}
 .card h2{font-size:15.5px;margin:0 0 4px;font-weight:600}
-.card p.hint{font-size:13px;color:var(--muted);margin:0 0 14px}
-label{display:block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.1em;
+.card p.hint{font-size:14.5px;color:var(--muted);margin:0 0 14px;line-height:1.6}
+label{display:block;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.08em;
  text-transform:uppercase;color:var(--muted);margin:12px 0 5px}
 label.req::after{content:" 필수";color:var(--rust);letter-spacing:0}
 .fw{position:relative}
-input,textarea,select{width:100%;padding:11px 34px 11px 12px;font-size:16px;border-radius:7px;
+input,textarea,select{width:100%;padding:12px 34px 12px 13px;font-size:17px;border-radius:7px;
  border:1px solid var(--line);background:var(--surface-2);color:var(--ink);font-family:inherit;
  -webkit-appearance:none;appearance:none}
 input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;border-color:transparent}
@@ -55,57 +55,59 @@ input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:1px;bo
  border-radius:50%;background:var(--line);color:var(--ink);font-size:13px;line-height:1;cursor:pointer;display:none;padding:0}
 .fw.has .clr{display:block}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-button{font-family:inherit;font-size:15px;font-weight:600;border-radius:8px;border:1px solid var(--line);
- background:var(--surface-2);color:var(--ink);padding:12px 16px;cursor:pointer}
+.dims{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:9px;margin-top:12px;align-items:end}
+button{font-family:inherit;font-size:16.5px;font-weight:600;border-radius:8px;border:1px solid var(--line);
+ background:var(--surface-2);color:var(--ink);padding:13px 16px;cursor:pointer}
 button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 button.primary:disabled{opacity:.4;cursor:not-allowed}
 button.ghost{background:transparent}
 button.danger{color:var(--rust);border-color:var(--rust-soft)}
 button.wide{width:100%;margin-top:14px}
-.btnrow{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btnrow{display:flex;gap:8px;margin-top:11px;flex-wrap:wrap}
 .btnrow button{flex:1;min-width:100px}
 .pick{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px}
-.pick button{font-size:14px;padding:13px 8px}
+.pick button{font-size:16px;padding:15px 8px}
 .pick button.on{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .note{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 8px 8px 0;
- padding:11px 13px;margin:12px 0;font-size:13.5px}
+ padding:13px 15px;margin:12px 0;font-size:15px;line-height:1.6}
 .note.warn{border-left-color:var(--rust);background:var(--rust-soft)}
 .note.info{border-left-color:var(--steel);background:var(--steel-soft)}
 .note.cau{border-left-color:var(--warn);background:var(--warn-soft)}
-.pill{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.08em;
- padding:3px 8px;border-radius:20px;font-weight:600}
+.pill{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:12px;letter-spacing:.06em;
+ padding:4px 9px;border-radius:20px;font-weight:600}
 .pill.ok{background:var(--good-soft);color:var(--good)}
 .pill.bad{background:var(--rust-soft);color:var(--rust)}
 .pill.neu{background:var(--steel-soft);color:var(--steel)}
 .stage{position:relative;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;
- overflow:hidden;margin-top:12px;touch-action:none}
+ overflow:hidden;margin-top:10px;touch-action:none;max-height:46vh}
+.stage canvas{max-height:46vh;object-fit:contain;margin:0 auto}
 canvas{display:block;width:100%;height:auto}
-.readout{display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--ink-2)}
+.readout{display:flex;gap:16px;flex-wrap:wrap;margin-top:11px;font-family:"IBM Plex Mono",monospace;font-size:14px;color:var(--ink-2)}
 .readout b{color:var(--accent);font-weight:600}
 .bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:10px}
 .bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .1s linear}
-.taplist{margin-top:12px;max-height:260px;overflow-y:auto;border:1px solid var(--line-soft);border-radius:8px}
-.ti{display:flex;align-items:center;gap:9px;padding:9px 11px;border-bottom:1px solid var(--line-soft);font-size:13px}
+.taplist{margin-top:10px;max-height:150px;overflow-y:auto;border:1px solid var(--line-soft);border-radius:8px}
+.ti{display:flex;align-items:center;gap:9px;padding:11px 12px;border-bottom:1px solid var(--line-soft);font-size:15px}
 .ti:last-child{border-bottom:0}
 .ti .id{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--muted);min-width:34px}
-.ti .co{font-family:"IBM Plex Mono",monospace;flex:1;font-size:12px}
-.ti button{padding:5px 9px;font-size:12px;font-weight:500}
+.ti .co{font-family:"IBM Plex Mono",monospace;flex:1;font-size:13.5px}
+.ti button{padding:7px 11px;font-size:13.5px;font-weight:500}
 .empty{padding:22px;text-align:center;color:var(--muted);font-size:13px}
-.stat{display:flex;border:1px solid var(--line-soft);border-radius:8px;overflow:hidden;margin:12px 0}
+.stat{display:flex;border:1px solid var(--line-soft);border-radius:8px;overflow:hidden;margin:10px 0}
 .stat div{flex:1;padding:10px 6px;text-align:center;border-right:1px solid var(--line-soft)}
 .stat div:last-child{border-right:0}
-.stat .k{font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-.stat .v{font-family:"IBM Plex Mono",monospace;font-size:17px;font-weight:600;margin-top:2px}
-.fname{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--surface-2);
+.stat .k{font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.stat .v{font-family:"IBM Plex Mono",monospace;font-size:21px;font-weight:600;margin-top:2px}
+.fname{font-family:"IBM Plex Mono",monospace;font-size:13.5px;background:var(--surface-2);
  border:1px solid var(--line-soft);border-radius:7px;padding:9px 11px;margin:8px 0;word-break:break-all}
 .thumb{width:100%;border-radius:8px;border:1px solid var(--line-soft);margin-top:8px;display:block}
 pre{font-family:"IBM Plex Mono",monospace;font-size:10.5px;background:var(--surface-2);
  border:1px solid var(--line-soft);border-radius:8px;padding:10px;overflow:auto;max-height:230px;margin:8px 0}
-.bleed{margin-left:-16px;margin-right:-16px;border-radius:0;border-left:0;border-right:0}
+.bleed{margin-left:-14px;margin-right:-14px;border-radius:0;border-left:0;border-right:0}
 /* 촬영 화면과 결과 사진이 같은 크기로 보이도록 4:3 으로 고정하고,
    영상은 그 틀을 꽉 채운다(cover). 촬영할 때도 보이는 그대로만 잘라 담는다. */
-.cam{position:relative;margin:12px -16px 0;background:#000;overflow:hidden;aspect-ratio:4/3}
+.cam{position:relative;margin:10px -14px 0;background:#000;overflow:hidden;aspect-ratio:4/3;max-height:46vh}
 .cam video{display:block;width:100%;height:100%;object-fit:cover;background:#000}
 .cam canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .camtip{position:absolute;left:0;right:0;top:8px;text-align:center;color:#fff;font-size:12px;
@@ -117,21 +119,21 @@ pre{font-family:"IBM Plex Mono",monospace;font-size:10.5px;background:var(--surf
 .camBtns button{backdrop-filter:blur(6px);background:rgba(255,255,255,.16);color:#fff;border-color:rgba(255,255,255,.4)}
 .camBtns button.primary{background:var(--accent);color:var(--accent-ink);border-color:transparent}
 .gh{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.fileline{font-family:"IBM Plex Mono",monospace;font-size:11.5px;color:var(--muted);
+.fileline{font-family:"IBM Plex Mono",monospace;font-size:13px;color:var(--muted);
  margin-top:8px;word-break:break-all}
 .fileline.has{color:var(--accent)}
 .card.dim{opacity:.55}
 /* 중요한 셋 — 촬영, 타점, 녹음 */
-.big{font-size:17.5px;font-weight:700;padding:18px 16px}
-.card h2{font-size:13px;font-weight:600;color:var(--muted);margin:0 0 10px}
-.card h2 b{color:var(--ink);font-size:15.5px;font-weight:600}
+.big{font-size:19.5px;font-weight:700;padding:20px 16px}
+.card h2{font-size:14px;font-weight:600;color:var(--muted);margin:0 0 10px}
+.card h2 b{color:var(--ink);font-size:17.5px;font-weight:600}
 /* 곁가지 */
 .card.side{padding:13px 14px}
-.card.side label{margin:9px 0 3px;font-size:9.5px}
-.card.side input,.card.side select{padding:8px 10px;font-size:15px}
-.mini{font-size:13px;padding:9px 12px;font-weight:500}
+.card.side label{margin:10px 0 4px;font-size:11px}
+.card.side input,.card.side select{padding:10px 11px;font-size:16.5px}
+.mini{font-size:14.5px;padding:10px 13px;font-weight:500}
 .hide{display:none}
-footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:12px}
+footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:var(--muted);font-size:13.5px}
 </style>
 
 <div class="wrap">
@@ -208,7 +210,7 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
   </div>
   <div class="card" id="cardPhoto"><h2>2 · <b>사진 촬영</b>과 치수</h2>
   <div class="card">
-    <p class="hint">테두리 안에 조사면을 꽉 채워 <b>정면</b>에서 찍는다. 가로 길이만 넣으면 세로는 계산된다.</p>
+    <p class="hint">테두리 안에 조사면을 꽉 채워 <b>정면</b>에서 찍는다. <b>테두리 밖은 잘려 나간다.</b></p>
 
     <label class="req">조사면 사진</label>
     <div class="btnrow" style="margin-top:0">
@@ -231,13 +233,13 @@ footer{margin-top:26px;padding-top:14px;border-top:1px solid var(--line);color:v
       <span>박스 <b id="boxSize">—</b></span><span>축척 <b id="scaleOut">—</b></span><span id="sigPill"></span>
     </div>
 
-    <div class="row" style="margin-top:12px">
-      <div><label class="req">박스 가로 실제 길이 (mm)</label><input id="f_w" type="number" inputmode="numeric" placeholder="2400"></div>
-      <div><label class="req" id="hLab">박스 세로 (자동)</label><input id="f_h" type="number" inputmode="numeric" placeholder="1800"></div>
-    </div>
-    <div class="btnrow" style="margin-top:8px">
-      <button class="ghost mini" id="unlockBox">비스듬히 찍었다 · 모서리 맞추기</button>
-      <button class="ghost mini hide" id="resetBox">4 : 3 박스로 되돌리기</button>
+    <div class="dims">
+      <div><label class="req">가로 (mm)</label><input id="f_w" type="number" inputmode="numeric" placeholder="2400"></div>
+      <div><label class="req" id="hLab">세로 (자동)</label><input id="f_h" type="number" inputmode="numeric" placeholder="1800"></div>
+      <div><label>&nbsp;</label>
+        <button class="ghost mini" id="unlockBox" style="width:100%">모서리 맞추기</button>
+        <button class="ghost mini hide" id="resetBox" style="width:100%">되돌리기</button>
+      </div>
     </div>
     <div id="lockNote"></div>
     <div id="m1"></div>
@@ -495,6 +497,16 @@ function presetBox(W,H){
  const x0=(W-w)/2,y0=(H-h)/2;
  return [{x:x0,y:y0+h},{x:x0+w,y:y0+h},{x:x0+w,y:y0},{x:x0,y:y0}];}
 function arLabel(){return "4 : 3";}
+/* 잘라낸 뒤에는 사진 전체가 곧 조사 범위다 */
+function fullBox(W,H){return [{x:0,y:H},{x:W,y:H},{x:W,y:0},{x:0,y:0}];}
+/* 테두리 안쪽만 남기고 잘라낸다 — 화면에 보이던 것이 그대로 파일이 된다 */
+function cropToBox(img,W,H){
+ const b=presetBox(W,H);
+ const x0=Math.round(b[3].x),y0=Math.round(b[3].y);
+ const w=Math.round(b[1].x-b[0].x),h=Math.round(b[0].y-b[3].y);
+ const c=document.createElement("canvas");c.width=w;c.height=h;
+ c.getContext("2d").drawImage(img,x0,y0,w,h,0,0,w,h);
+ return new Promise(r=>c.toBlob(bl=>r(bl),"image/jpeg",0.92));}
 function syncLock(){
  $("hLab").textContent=BOX.locked?"박스 세로 (자동)":"박스 세로 실제 길이 (mm)";
  $("unlockBox").classList.toggle("hide",!BOX.locked);
@@ -504,15 +516,14 @@ function syncLock(){
 $("unlockBox").onclick=()=>{BOX.locked=false;syncLock();buildFrame();
  $("faceStage").scrollIntoView({block:"center",behavior:"smooth"});};
 $("resetBox").onclick=()=>{BOX.locked=true;
- if(S.face)S.box=presetBox(S.face.w,S.face.h);
+ if(S.face)S.box=fullBox(S.face.w,S.face.h);
  syncLock();autoDim("w");buildFrame();};
 /* 한쪽을 넣으면 다른 쪽을 채운다 */
 function autoDim(src){
  if(!BOX.locked||!S.box)return;
- const bw=Math.hypot(S.box[1].x-S.box[0].x,S.box[1].y-S.box[0].y);
- const bh=Math.hypot(S.box[3].x-S.box[0].x,S.box[3].y-S.box[0].y);
- if(!bw||!bh)return;
- const r=bw/bh;
+ /* 비율이 고정일 때는 화소가 아니라 정해진 비를 쓴다 — 반올림으로 1501 이
+    나오지 않게 */
+ const r=BOX.ar;
  if(src==="w"){const W=+$("f_w").value;if(W>0)$("f_h").value=Math.round(W/r);}
  else{const H=+$("f_h").value;if(H>0)$("f_w").value=Math.round(H*r);}}
 
@@ -577,12 +588,18 @@ $("camHam").onclick=()=>$("p_ham").click();
 $("pickHam").onclick=()=>$("p_hamF").click();
 const onFace=e=>{const f=e.target.files&&e.target.files[0];if(!f)return;loadFace(f);};
 function loadFace(f){
- loadImg(f,(img,file)=>{S.face={img,file,name:file.name,size:file.size,type:file.type,
-   lastModified:file.lastModified,w:img.naturalWidth,h:img.naturalHeight,camera:file.camera||null};
-  /* 촬영 때 화면에 띄운 것과 같은 «미리 설정된 박스» */
-  S.box=presetBox(img.naturalWidth,img.naturalHeight);BOX.locked=true;
+ loadImg(f,async(img,file)=>{
+  /* 테두리 밖은 버린다. 화면에서 보던 범위가 그대로 파일이 된다 */
+  const blob=await cropToBox(img,img.naturalWidth,img.naturalHeight);
+  const file2=new File([blob],file.name,{type:"image/jpeg",lastModified:file.lastModified});
+  file2.camera=file.camera||null;
+  const img2=new Image();
+  await new Promise(r=>{img2.onload=r;img2.onerror=r;img2.src=URL.createObjectURL(blob);});
+  S.face={img:img2,file:file2,name:file2.name,size:file2.size,type:"image/jpeg",
+   lastModified:file2.lastModified,w:img2.naturalWidth,h:img2.naturalHeight,camera:file2.camera};
+  S.box=fullBox(img2.naturalWidth,img2.naturalHeight);BOX.locked=true;
   $("faceStage").classList.remove("hide");$("faceRead").classList.remove("hide");
-  $("faceName").textContent=file.name+"  ·  "+img.naturalWidth+"×"+img.naturalHeight+" px";
+  $("faceName").textContent=file2.name+"  ·  "+img2.naturalWidth+"×"+img2.naturalHeight+" px";
   $("faceName").classList.add("has");
   syncLock();autoDim("w");buildFrame();markDirty();
   $("faceStage").scrollIntoView({block:"center",behavior:"smooth"});});}
@@ -1093,7 +1110,7 @@ function doResume(sess,taps){
    S.face={img,file:new File([sess.face.blob],sess.face.name||"face.jpg",{type:sess.face.type||"image/jpeg"}),
     name:sess.face.name,size:sess.face.size,type:sess.face.type,
     lastModified:sess.face.lastModified,w:sess.face.w,h:sess.face.h,camera:sess.face.camera};
-   S.box=sess.box&&sess.box.length===4?sess.box:presetBox(S.face.w,S.face.h);
+   S.box=sess.box&&sess.box.length===4?sess.box:fullBox(S.face.w,S.face.h);
    $("faceStage").classList.remove("hide");$("faceRead").classList.remove("hide");
    $("faceName").textContent=(sess.face.name||"사진")+"  ·  "+S.face.w+"×"+S.face.h+" px";
    $("faceName").classList.add("has");
